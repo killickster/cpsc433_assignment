@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
 public class Parser {
 
     private Problem problem;
-    private Pattern labSlotPattern;
+    private Pattern slotPattern;
+    private Pattern coursePattern;
 
     public Parser(){
 
@@ -23,9 +24,15 @@ public class Parser {
 
         //Generate regular expressions
 
-        String labSlotRegex = "([A-Z][A-Z]),\\s{0,10}(\\d:\\d\\d),\\s{0,10}(\\d),\\s{0,10}(\\d)";
+        //Regular expression for slots
+        String slotRegex = "([A-Z][A-Z]),\\s{0,10}(\\d{1,2}:\\d\\d),\\s{0,10}(\\d),\\s{0,10}(\\d)"; 
+        this.slotPattern = Pattern.compile(slotRegex);
 
-        this.labSlotPattern = Pattern.compile(labSlotRegex);
+        //Regular expression for Courses
+        String courseRegex = "([A-Z]{4})\\s{0,10}(\\d{3})\\s{0,10}([A-Z]{3})\\s{0,10}(\\d{2})";
+
+        this.coursePattern = Pattern.compile(courseRegex);
+
 
         File file = new File(fileName);
 
@@ -86,7 +93,7 @@ public class Parser {
 
             System.out.println("Course Slot:" + trimmedLine);
 
-            Matcher regexMatcher = this.labSlotPattern.matcher(trimmedLine);
+            Matcher regexMatcher = this.slotPattern.matcher(trimmedLine);
 
             regexMatcher.find();
 
@@ -99,7 +106,7 @@ public class Parser {
 
                 Slot courseSlot = new CourseSlot(day, time, Integer.parseInt(coursemax), Integer.parseInt(coursemin));
 
-                this.problem.addSlot(courseSlot);
+                this.problem.addCourseSlot(courseSlot);
             }
 
             
@@ -123,6 +130,22 @@ public class Parser {
 
             System.out.println("Lab Slot: " + trimmedLine);
 
+            Matcher regexMatcher = this.slotPattern.matcher(trimmedLine);
+
+            regexMatcher.find();
+
+            if(regexMatcher.group().length() != 0){
+
+                String day = regexMatcher.group(1);
+                String time = regexMatcher.group(2);
+                String coursemax = regexMatcher.group(3);
+                String coursemin = regexMatcher.group(4);
+
+                Slot labSlot = new LabSlot(day, time, Integer.parseInt(coursemax), Integer.parseInt(coursemin));
+
+                this.problem.addLabSlot(labSlot);
+            }
+
         }
     }
 
@@ -141,6 +164,23 @@ public class Parser {
             }
 
             System.out.println("Course: " + trimmedLine);
+
+            Matcher regexMatcher = this.coursePattern.matcher(trimmedLine);
+
+            regexMatcher.find();
+
+            if(regexMatcher.group().length() != 0){
+
+                String courseAbbreviation = regexMatcher.group(1);
+                String courseNumber = regexMatcher.group(2);
+                String courseFormat = regexMatcher.group(3);
+                String courseSection = regexMatcher.group(4);
+
+                Course course = new Course(courseAbbreviation, courseNumber, courseFormat, courseSection);
+
+                System.out.println(courseNumber);
+                this.problem.addCourse(course);
+            }
 
         }
     }
@@ -256,6 +296,10 @@ public class Parser {
             System.out.println("Partial Assignment: " + trimmedLine);
 
         }
+
+        System.out.println(this.problem.getCourseSlots().size());
+        System.out.println(this.problem.getLabSlots().size());
+        System.out.println(this.problem.getCourses().size());
 
     }
 

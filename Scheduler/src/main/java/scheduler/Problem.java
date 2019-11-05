@@ -4,20 +4,40 @@ import java.util.*;
 
 public class Problem {
 
-    private ArrayList<Slot> slots;
+    private ArrayList<Slot> courseSlots;
+    private ArrayList<Slot> labSlots;
+    private ArrayList<Course> courses;
 
 
     public Problem(){
-        this.slots = new ArrayList<Slot>(); 
+        this.courseSlots = new ArrayList<Slot>(); 
+        this.labSlots = new ArrayList<Slot>();
+        this.courses = new ArrayList<Course>();
     }
 
 
-    public void addSlot(Slot slot){
-        this.slots.add(slot);
+    public void addLabSlot(Slot slot){
+        this.labSlots.add(slot);
     }
 
-    public ArrayList<Slot> getSlots(){
-        return this.slots;
+    public void addCourseSlot(Slot slot){
+        this.courseSlots.add(slot);
+    }
+
+    public void addCourse(Course course){
+        this.courses.add(course);
+    }
+
+    public ArrayList<Slot> getLabSlots(){
+        return this.labSlots;
+    }
+
+    public ArrayList<Slot> getCourseSlots(){
+        return this.courseSlots;
+    }
+
+    public ArrayList<Course> getCourses(){
+        return this.courses;
     }
     
 
