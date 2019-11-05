@@ -15,6 +15,10 @@ public class Problem {
     public void addSlot(Slot slot){
         this.slots.add(slot);
     }
+
+    public ArrayList<Slot> getSlots(){
+        return this.slots;
+    }
     
 
 }

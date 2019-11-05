@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
     private Problem problem;
+    private Pattern labSlotPattern;
 
     public Parser(){
 
@@ -17,6 +20,12 @@ public class Parser {
 
 
     public void parseFile(String fileName) throws IOException{
+
+        //Generate regular expressions
+
+        String labSlotRegex = "([A-Z][A-Z]),\\s{0,10}(\\d:\\d\\d),\\s{0,10}(\\d),\\s{0,10}(\\d)";
+
+        this.labSlotPattern = Pattern.compile(labSlotRegex);
 
         File file = new File(fileName);
 
@@ -75,8 +84,25 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Course Slot: " + trimmedLine);
+            System.out.println("Course Slot:" + trimmedLine);
 
+            Matcher regexMatcher = this.labSlotPattern.matcher(trimmedLine);
+
+            regexMatcher.find();
+
+            if(regexMatcher.group().length() != 0){
+
+                String day = regexMatcher.group(1);
+                String time = regexMatcher.group(2);
+                String coursemax = regexMatcher.group(3);
+                String coursemin = regexMatcher.group(4);
+
+                Slot courseSlot = new CourseSlot(day, time, Integer.parseInt(coursemax), Integer.parseInt(coursemin));
+
+                this.problem.addSlot(courseSlot);
+            }
+
+            
 
 
         }
@@ -230,6 +256,7 @@ public class Parser {
             System.out.println("Partial Assignment: " + trimmedLine);
 
         }
+
     }
 
 

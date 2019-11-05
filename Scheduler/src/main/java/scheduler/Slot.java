@@ -4,11 +4,11 @@ public abstract class Slot {
 
     private String day;
     private String startTime;
-    private int coursemax;
-    private int coursemin;
+    private Integer coursemax;
+    private Integer coursemin;
 
 
-    public Slot(String day, String startTime, int coursemax, int coursemin){
+    public Slot(String day, String startTime, Integer coursemax, Integer coursemin){
         this.day = day;
         this.startTime = startTime;
         this.coursemax = coursemax;
@@ -23,11 +23,11 @@ public abstract class Slot {
         return this.startTime;
     }
 
-    public int getCourseMax(){
+    public Integer getCourseMax(){
         return this.coursemax;
     }
 
-    public int getCourseMin(){
+    public Integer getCourseMin(){
         return this.coursemin;
     }
 
@@ -39,11 +39,11 @@ public abstract class Slot {
         this.startTime = startTime;
     }
 
-    public void setCourseMax(int courseMax){
+    public void setCourseMax(Integer courseMax){
         this.coursemax = courseMax;
     }
 
-    public void setCourseMin(int courseMin){
+    public void setCourseMin(Integer courseMin){
         this.coursemin = coursemin;
     }
 
