@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +17,8 @@ public class Parser {
     private static final Pattern coursePattern = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
     private static final Pattern labPattern1 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2})");
     private static final Pattern labPattern2 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
+
+
 
     public Parser(){
 
@@ -232,9 +235,6 @@ public class Parser {
 
                 this.problem.addLab(lab);
             }
-
-
-
         }
     }
 
@@ -251,7 +251,88 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Not Compatible: " + trimmedLine);
+            Matcher regexMatcherCourses = Parser.coursePattern.matcher(trimmedLine);
+            Matcher regexMatcherLabs1 = Parser.labPattern1.matcher(trimmedLine);
+            Matcher regexMatcherLabs2 = Parser.labPattern2.matcher(trimmedLine);
+
+
+            ArrayList<RoomBooking> bookings = new ArrayList<RoomBooking>();
+
+
+            while(regexMatcherLabs1.find()){
+
+                String courseAbbreviation = regexMatcherLabs1.group(1);
+                String courseNumber = regexMatcherLabs1.group(2);
+                String courseFormat = regexMatcherLabs1.group(3);
+                String courseSection = regexMatcherLabs1.group(4);
+                String labType = regexMatcherLabs1.group(5);
+                String labSection = regexMatcherLabs1.group(6);
+
+
+
+                for(Lab lab: problem.getLabs()){
+
+                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
+                        && lab.getLabFormat().equals(labType) && lab.getLabSection().equals(labSection)){
+
+                            bookings.add(lab);
+                }
+                
+            }
+        }
+
+            while(regexMatcherLabs2.find()){
+
+                String courseAbbreviation = regexMatcherLabs2.group(1);
+                String courseNumber = regexMatcherLabs2.group(2);
+                String labType = regexMatcherLabs2.group(3);
+                String labSection = regexMatcherLabs2.group(4);
+
+
+
+
+                for(Lab lab: problem.getLabs()){
+                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
+                    && lab.getLabFormat().equals(labType) && lab.getLabSection().equals(labSection)){
+
+                        if(bookings.size() < 2){
+                            bookings.add(lab);
+                        }
+               
+                    }
+                }
+            }
+
+            while(regexMatcherCourses.find()){
+
+                String courseAbbreviation = regexMatcherCourses.group(1);
+                String courseNumber = regexMatcherCourses.group(2);
+                String courseFormat = regexMatcherCourses.group(3);
+                String courseSection = regexMatcherCourses.group(4);
+
+                for(Course course: problem.getCourses()){
+                    if(course.getCourseName().equals(courseAbbreviation) && course.getCourseNumber().equals(courseNumber)
+                    && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){
+
+                        if(bookings.size() < 2){
+
+                            bookings.add(course);
+                        }
+
+
+                    }
+                }
+
+            }
+
+            if(bookings.size() == 2){
+
+                NotCompatible notCompatible = new NotCompatible(bookings.get(0), bookings.get(1));
+
+
+                this.problem.addNotCompatible(notCompatible);
+            }
 
         }
     }
@@ -334,6 +415,7 @@ public class Parser {
         System.out.println("Number of lab slots: " +this.problem.getLabSlots().size());
         System.out.println("Number of courses: " + this.problem.getCourses().size());
         System.out.println("Number of labs: " + this.problem.getLabs().size());
+        System.out.println("Number of not compatible: " + this.problem.getNotCompatible().size());
 
     }
 

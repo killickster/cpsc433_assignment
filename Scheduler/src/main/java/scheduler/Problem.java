@@ -8,6 +8,7 @@ public class Problem {
     private ArrayList<Slot> labSlots;
     private ArrayList<Course> courses;
     private ArrayList<Lab> labs;
+    private ArrayList<NotCompatible> notCompatible;
 
 
     public Problem(){
@@ -15,6 +16,7 @@ public class Problem {
         this.labSlots = new ArrayList<Slot>();
         this.courses = new ArrayList<Course>();
         this.labs = new ArrayList<Lab>();
+        this.notCompatible = new ArrayList<NotCompatible>();
     }
 
 
@@ -34,6 +36,10 @@ public class Problem {
         this.labs.add(lab);
     }
 
+    public void addNotCompatible(NotCompatible notCompatible){
+        this.notCompatible.add(notCompatible);
+    }
+
     public ArrayList<Slot> getLabSlots(){
         return this.labSlots;
     }
@@ -48,6 +54,10 @@ public class Problem {
 
     public ArrayList<Lab> getLabs(){
         return this.labs;
+    }
+
+    public ArrayList<NotCompatible> getNotCompatible(){
+        return this.notCompatible;
     }
 
 

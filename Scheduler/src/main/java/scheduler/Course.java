@@ -1,28 +1,16 @@
 package scheduler;
 
-public class Course {
+public class Course extends RoomBooking{
 
-    private String abbreviation;
-    private String courseNumber;
     private String format;
     private String section;
     
     public Course(String abbreviation, String courseNumber, String format, String section){
 
-        this.abbreviation = abbreviation;
-        this.courseNumber = courseNumber;
+        super(abbreviation, courseNumber);
         this.format = format;
         this.section = section;
 
-    }
-
-    public String getAbbreviation(){
-        return this.abbreviation;
-    }
-
-
-    public String getCourseNumber(){
-        return this.courseNumber;
     }
 
     public String getFormat(){

@@ -1,10 +1,8 @@
 package scheduler;
 
-public class Lab{
+public class Lab extends RoomBooking{
 
 
-    private String courseAbbreviation;
-    private String courseNumber;
     private String courseFormat;
     private String courseSection;
     private String labFormat;
@@ -13,8 +11,8 @@ public class Lab{
 
     public Lab(String courseAbbreviation, String courseNumber, String labFormat, String labSection){
 
-        this.courseAbbreviation = courseAbbreviation;
-        this.courseNumber = courseNumber;
+        super(courseAbbreviation, courseNumber);
+
         this.labFormat = labFormat;
         this.labSection = labSection;
 
@@ -26,5 +24,21 @@ public class Lab{
 
     public void setCourseSection(String courseSection){
         this.courseSection = courseSection;
+    }
+
+    public String getCourseFormat(){
+        return this.courseFormat;
+    }
+
+    public String getCourseSection(){
+        return this.courseSection;
+    }
+
+    public String getLabFormat(){
+        return this.labFormat;
+    }
+
+    public String getLabSection(){
+        return this.labSection;
     }
 }
