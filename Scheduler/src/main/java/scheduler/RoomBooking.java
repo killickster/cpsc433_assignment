@@ -1,5 +1,9 @@
 package scheduler;
 
+/**
+ * Abstract class extended by Course and Lab classes
+ */
+
 public abstract class RoomBooking {
 
     private String courseName;
