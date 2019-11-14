@@ -4,35 +4,32 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
 
     private Problem problem;
-    private Pattern slotPattern;
-    private Pattern coursePattern;
+
+    //Regular expressions to parse text file
+    private static final Pattern slotPattern = Pattern.compile("([A-Z][A-Z]),\\s*(\\d{1,2}:\\d\\d),\\s*(\\d),\\s*(\\d)");
+    private static final Pattern coursePattern = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
+    private static final Pattern labPattern1 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2})");
+    private static final Pattern labPattern2 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
+    private static final Pattern timePattern = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2})");
+
+
 
     public Parser(){
 
         problem = new Problem();
 
+
     }
 
 
     public void parseFile(String fileName) throws IOException{
-
-        //Generate regular expressions
-
-        //Regular expression for slots
-        String slotRegex = "([A-Z][A-Z]),\\s{0,10}(\\d{1,2}:\\d\\d),\\s{0,10}(\\d),\\s{0,10}(\\d)"; 
-        this.slotPattern = Pattern.compile(slotRegex);
-
-        //Regular expression for Courses
-        String courseRegex = "([A-Z]{4})\\s{0,10}(\\d{3})\\s{0,10}([A-Z]{3})\\s{0,10}(\\d{2})";
-
-        this.coursePattern = Pattern.compile(courseRegex);
-
 
         File file = new File(fileName);
 
@@ -165,7 +162,7 @@ public class Parser {
 
             System.out.println("Course: " + trimmedLine);
 
-            Matcher regexMatcher = this.coursePattern.matcher(trimmedLine);
+            Matcher regexMatcher = Parser.coursePattern.matcher(trimmedLine);
 
             regexMatcher.find();
 
@@ -178,7 +175,6 @@ public class Parser {
 
                 Course course = new Course(courseAbbreviation, courseNumber, courseFormat, courseSection);
 
-                System.out.println(courseNumber);
                 this.problem.addCourse(course);
             }
 
@@ -202,6 +198,44 @@ public class Parser {
 
             System.out.println("Lab: " + trimmedLine);
 
+            Matcher regexMatcher1 = Parser.labPattern1.matcher(trimmedLine);
+            Matcher regexMatcher2 = Parser.labPattern2.matcher(trimmedLine);
+
+            regexMatcher1.find();
+            regexMatcher2.find();
+
+
+            if(regexMatcher1.matches()){ 
+
+                String courseAbbreviation = regexMatcher1.group(1);
+                String courseNumber = regexMatcher1.group(2);
+                String courseFormat = regexMatcher1.group(3);
+                String courseSection = regexMatcher1.group(4);
+                String labType = regexMatcher1.group(5);
+                String labSection = regexMatcher1.group(6);
+
+                Lab lab = new Lab(courseAbbreviation, courseNumber, labType, labSection);
+
+                lab.setCourseFormat(courseFormat);
+                lab.setCourseSection(courseSection);
+
+                this.problem.addLab(lab);
+
+
+            }else if(regexMatcher2.matches()){ 
+
+                String courseAbbreviation = regexMatcher2.group(1);
+                String courseNumber = regexMatcher2.group(2);
+                String labType = regexMatcher2.group(3);
+                String labSection = regexMatcher2.group(4);
+
+                Lab lab = new Lab(courseAbbreviation, courseNumber, labType, labSection);
+
+                lab.setCourseFormat(null);
+                lab.setCourseSection(null);
+
+                this.problem.addLab(lab);
+            }
         }
     }
 
@@ -218,10 +252,102 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Not Compatible: " + trimmedLine);
+
+            Matcher regexMatcherLabs = Parser.labPattern1.matcher(trimmedLine);
+            Matcher regexMatcherCourses = Parser.coursePattern.matcher(trimmedLine);
+
+
+            ArrayList<RoomBooking> bookings = new ArrayList<RoomBooking>();
+
+
+            while(regexMatcherLabs.find()){
+
+                String courseAbbreviation = regexMatcherLabs.group(1);
+                String courseNumber = regexMatcherLabs.group(2);
+                String courseFormat = regexMatcherLabs.group(3);
+                String courseSection = regexMatcherLabs.group(4);
+                String labType = regexMatcherLabs.group(5);
+                String labSection = regexMatcherLabs.group(6);
+
+
+
+
+                for(Lab lab: problem.getLabs()){
+
+                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
+                        && lab.getLabFormat().equals(labType) && lab.getLabSection().equals(labSection)){
+
+                            bookings.add(lab);
+                }
+                
+            }
 
         }
+
+
+            
+
+            while(regexMatcherCourses.find()){
+
+                String courseAbbreviation = regexMatcherCourses.group(1);
+                String courseNumber = regexMatcherCourses.group(2);
+                String format = regexMatcherCourses.group(3);
+
+
+                if(format.equals("TUT")){
+
+                    String labFormat = format;
+                    String labSection = regexMatcherCourses.group(4);
+
+                    for(Lab lab: problem.getLabs()){
+                        if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+    
+                            if(bookings.size() < 2){
+                                bookings.add(lab);
+                            }
+                   
+                        }
+                    }
+
+
+
+
+                }else{
+                    String courseSection = regexMatcherCourses.group(4);
+                    String courseFormat = format;
+
+                    for(Course course: problem.getCourses()){
+                        if(course.getCourseName().equals(courseAbbreviation) && course.getCourseNumber().equals(courseNumber)
+                        && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){
+    
+                            if(bookings.size() < 2){
+    
+                                bookings.add(course);
+
+                            }
+    
+    
+                        }
+                    }
+
+                }
+
+            }
+
+
+
+            if(bookings.size() == 2){
+
+                NotCompatible notCompatible = new NotCompatible(bookings.get(0), bookings.get(1));
+
+
+                this.problem.addNotCompatible(notCompatible);
+            }
+
     }
+}
 
     public void parseUnwanted(BufferedReader reader) throws IOException{
     
@@ -236,10 +362,115 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Unwanted: " + trimmedLine);
+            Matcher regexMatcherCourses = Parser.coursePattern.matcher(trimmedLine);
+            Matcher regexMatcherLabs1 = Parser.labPattern1.matcher(trimmedLine);
+            Matcher regexMatcherTime = Parser.timePattern.matcher(trimmedLine);
+
+            regexMatcherTime.find();
+
+            String day = regexMatcherTime.group(1);
+            String time = regexMatcherTime.group(2);
+
+            Unwanted unwanted = null;
+            
+            if(regexMatcherLabs1.find()){
+
+                String courseAbbreviation = regexMatcherLabs1.group(1);
+                String courseNumber = regexMatcherLabs1.group(2);
+                String courseFormat = regexMatcherLabs1.group(3);
+                String courseSection = regexMatcherLabs1.group(4);
+                String labType = regexMatcherLabs1.group(5);
+                String labSection = regexMatcherLabs1.group(6);
+
+                RoomBooking selectedBooking;
+
+                System.out.println("lab1");
+
+                for(Lab lab: problem.getLabs()){
+
+                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
+                        && lab.getLabFormat().equals(labType) && lab.getLabSection().equals(labSection)){
+                            selectedBooking = lab;
+
+                        for(Slot labSlot: problem.getLabSlots()){
+                            if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(time)){
+                                unwanted = new Unwanted(selectedBooking, labSlot);
+                            }
+                        }
+                            
+                }
+
+
+
+            }
+        }
+
+
+        else if(regexMatcherCourses.find()){
+
+            String courseAbbreviation = regexMatcherCourses.group(1);
+            String courseNumber = regexMatcherCourses.group(2);
+            String format = regexMatcherCourses.group(3);
+
+            System.out.println("Course");
+
+            if(format.equals("TUT")){
+
+                String labFormat = format;
+                String labSection = regexMatcherCourses.group(4);
+
+                for(Lab lab: problem.getLabs()){
+                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
+                    && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+
+                    
+                        RoomBooking selectedBooking = lab;
+    
+    
+                        for(Slot courseSlot: problem.getCourseSlots()){
+                            if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(time)){
+    
+                                unwanted = new Unwanted(selectedBooking, courseSlot);
+    
+                            }
+                        }
+               
+                    }
+                }
+
+            }else{
+                String courseFormat = format;
+                String courseSection = regexMatcherCourses.group(4);
+
+                for(Course course: problem.getCourses()){
+                    if(course.getCourseName().equals(courseAbbreviation) && course.getCourseNumber().equals(courseNumber)
+                    && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){
+                       
+                        RoomBooking selectedBooking = course;
+    
+    
+                        for(Slot courseSlot: problem.getCourseSlots()){
+                            if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(time)){
+    
+                                unwanted = new Unwanted(selectedBooking, courseSlot);
+    
+                            }
+                        } 
+    
+                    }
+                }
+            }
 
         }
-    }
+
+
+            this.problem.addUnwanted(unwanted);
+            System.out.println("Unwanted: " + trimmedLine);
+
+        
+        }  
+      }
 
     public void parsePreferences(BufferedReader reader) throws IOException{
     
@@ -297,10 +528,12 @@ public class Parser {
 
         }
 
-        System.out.println(this.problem.getCourseSlots().size());
-        System.out.println(this.problem.getLabSlots().size());
-        System.out.println(this.problem.getCourses().size());
-
+        System.out.println("Number of course slots: "+this.problem.getCourseSlots().size());
+        System.out.println("Number of lab slots: " +this.problem.getLabSlots().size());
+        System.out.println("Number of courses: " + this.problem.getCourses().size());
+        System.out.println("Number of labs: " + this.problem.getLabs().size());
+        System.out.println("Number of not compatible: " + this.problem.getNotCompatible().size());
+        System.out.println("Number of unwanted: " + this.problem.getUnwanted().size());
     }
 
 
