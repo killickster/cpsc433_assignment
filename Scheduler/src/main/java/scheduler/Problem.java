@@ -12,6 +12,7 @@ public class Problem {
     private ArrayList<Unwanted> unwanted;
     private ArrayList<Preference> preferences;
     private ArrayList<Pair> pairs;
+    private ArrayList<PartialAssignment> partialAssignments;
 
 
     public Problem(){
@@ -23,6 +24,7 @@ public class Problem {
         this.unwanted = new ArrayList<Unwanted>();
         this.preferences = new ArrayList<Preference>();
         this.pairs = new ArrayList<Pair>();
+        this.partialAssignments = new ArrayList<PartialAssignment>();
 
     }
 
@@ -59,6 +61,10 @@ public class Problem {
         this.preferences.add(preference);
     }
 
+    public void addPartialAssignment(PartialAssignment partialAssignemnt){
+        this.partialAssignments.add(partialAssignemnt);
+    }
+
     public ArrayList<Slot> getLabSlots(){
         return this.labSlots;
     }
@@ -89,6 +95,10 @@ public class Problem {
 
     public ArrayList<Pair> getPairs(){
         return this.pairs;
+    }
+
+    public ArrayList<PartialAssignment> getPartialAssignemnts(){
+        return this.partialAssignments;
     }
 
 

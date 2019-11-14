@@ -20,6 +20,8 @@ public class Parser {
     private static final Pattern timePattern = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2})");
     private static final Pattern preferencePattern1 = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2}),\\s*([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*(\\d{1,2})");
     private static final Pattern preferencePattern2 = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2}),\\s*([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*(\\d{1,2})");
+    private static final Pattern partialAssignmentCourses = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*([A-Z]{2}),\\s*(\\d{1,2}:\\d{2})");
+    private static final Pattern partialAssignmentLabs = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*([A-Z]{2}),\\s*(\\d{1,2}:\\d{2})");
 
 
 
@@ -695,6 +697,102 @@ public class Parser {
                 return;
             }
 
+            Matcher matcherCourse = Parser.partialAssignmentCourses.matcher(trimmedLine);
+            Matcher matcherLab = Parser.partialAssignmentLabs.matcher(trimmedLine);
+
+
+            if(matcherLab.find()){
+
+                System.out.println("yes1");
+
+                String courseName =  matcherLab.group(1);
+                String courseNumber = matcherLab.group(2);
+                String courseFormat = matcherLab.group(3);
+                String courseSection = matcherLab.group(4);
+                String labFormat = matcherLab.group(5);
+                String labSection = matcherLab.group(6);
+                String day = matcherLab.group(7);
+                String startTime = matcherLab.group(8);
+
+                for(Lab lab: this.problem.getLabs()){
+
+                    if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
+                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+
+                            for(Slot labSlot: problem.getLabSlots()){
+                                if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
+
+                                    this.problem.addPartialAssignment(new PartialAssignment(lab, labSlot));
+        
+                                }
+                            } 
+
+                }
+
+            }
+
+
+
+            }else if(matcherCourse.find()){
+
+
+                System.out.println("yes");
+
+                String courseName = matcherCourse.group(1);
+                String courseNumber = matcherCourse.group(2);
+                String format = matcherCourse.group(3);
+    
+                if(format.equals("TUT")){
+                    String labFormat = format;
+                    String labSection = matcherCourse.group(4);
+                    String day = matcherCourse.group(5);
+                    String startTime = matcherCourse.group(6);
+    
+                    for(Lab lab: problem.getLabs()){
+                        if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
+                            && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+
+                                for(Slot labSlot: problem.getLabSlots()){
+                                    if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
+    
+                                        this.problem.addPartialAssignment(new PartialAssignment(lab, labSlot));
+                                    }
+                                } 
+
+    
+                    }
+                }
+            }else{
+                    String courseFormat = format;
+                    String courseSection = matcherCourse.group(4);
+                    String day = matcherCourse.group(5);
+                    String startTime = matcherCourse.group(6);
+    
+                    for(Course course: problem.getCourses()){
+                        if(course.getCourseName().equals(courseName) && course.getCourseNumber().equals(courseNumber)
+                            && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){ 
+
+                                System.out.println("yes");
+
+                                for(Slot courseSlot: problem.getCourseSlots()){
+                                    if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(startTime)){
+
+                                        this.problem.addPartialAssignment(new PartialAssignment(course, courseSlot));
+
+                                    }
+                                }
+    
+                                
+                    }
+    
+                }
+
+                
+            }
+        }
+
+
             System.out.println("Partial Assignment: " + trimmedLine);
 
         }
@@ -707,6 +805,7 @@ public class Parser {
         System.out.println("Number of unwanted: " + this.problem.getUnwanted().size());
         System.out.println("Number of Preferences: " + this.problem.getPrefrences().size());
         System.out.println("Number of pairs: " + this.problem.getPairs().size());
+        System.out.println("Number of partial assignements" + this.problem.getPartialAssignemnts().size());
 
     }
     
