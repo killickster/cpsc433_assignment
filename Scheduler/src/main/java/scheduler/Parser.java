@@ -10,29 +10,22 @@ import java.util.regex.Pattern;
 public class Parser {
 
     private Problem problem;
-    private Pattern slotPattern;
-    private Pattern coursePattern;
+
+    //Regular expressions to parse text file
+    private static final Pattern slotPattern = Pattern.compile("([A-Z][A-Z]),\\s*(\\d{1,2}:\\d\\d),\\s*(\\d),\\s*(\\d)");
+    private static final Pattern coursePattern = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
+    private static final Pattern labPattern1 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2})");
+    private static final Pattern labPattern2 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
 
     public Parser(){
 
         problem = new Problem();
 
+
     }
 
 
     public void parseFile(String fileName) throws IOException{
-
-        //Generate regular expressions
-
-        //Regular expression for slots
-        String slotRegex = "([A-Z][A-Z]),\\s{0,10}(\\d{1,2}:\\d\\d),\\s{0,10}(\\d),\\s{0,10}(\\d)"; 
-        this.slotPattern = Pattern.compile(slotRegex);
-
-        //Regular expression for Courses
-        String courseRegex = "([A-Z]{4})\\s{0,10}(\\d{3})\\s{0,10}([A-Z]{3})\\s{0,10}(\\d{2})";
-
-        this.coursePattern = Pattern.compile(courseRegex);
-
 
         File file = new File(fileName);
 
@@ -165,7 +158,7 @@ public class Parser {
 
             System.out.println("Course: " + trimmedLine);
 
-            Matcher regexMatcher = this.coursePattern.matcher(trimmedLine);
+            Matcher regexMatcher = Parser.coursePattern.matcher(trimmedLine);
 
             regexMatcher.find();
 
@@ -178,7 +171,6 @@ public class Parser {
 
                 Course course = new Course(courseAbbreviation, courseNumber, courseFormat, courseSection);
 
-                System.out.println(courseNumber);
                 this.problem.addCourse(course);
             }
 
@@ -201,6 +193,47 @@ public class Parser {
             }
 
             System.out.println("Lab: " + trimmedLine);
+
+            Matcher regexMatcher1 = Parser.labPattern1.matcher(trimmedLine);
+            Matcher regexMatcher2 = Parser.labPattern2.matcher(trimmedLine);
+
+            regexMatcher1.find();
+            regexMatcher2.find();
+
+
+            if(regexMatcher1.matches()){ 
+
+                String courseAbbreviation = regexMatcher1.group(1);
+                String courseNumber = regexMatcher1.group(2);
+                String courseFormat = regexMatcher1.group(3);
+                String courseSection = regexMatcher1.group(4);
+                String labType = regexMatcher1.group(5);
+                String labSection = regexMatcher1.group(6);
+
+                Lab lab = new Lab(courseAbbreviation, courseNumber, labType, labSection);
+
+                lab.setCourseFormat(courseFormat);
+                lab.setCourseSection(courseSection);
+
+                this.problem.addLab(lab);
+
+
+            }else if(regexMatcher2.matches()){ 
+
+                String courseAbbreviation = regexMatcher2.group(1);
+                String courseNumber = regexMatcher2.group(2);
+                String labType = regexMatcher2.group(3);
+                String labSection = regexMatcher2.group(4);
+
+                Lab lab = new Lab(courseAbbreviation, courseNumber, labType, labSection);
+
+                lab.setCourseFormat(null);
+                lab.setCourseSection(null);
+
+                this.problem.addLab(lab);
+            }
+
+
 
         }
     }
@@ -297,9 +330,10 @@ public class Parser {
 
         }
 
-        System.out.println(this.problem.getCourseSlots().size());
-        System.out.println(this.problem.getLabSlots().size());
-        System.out.println(this.problem.getCourses().size());
+        System.out.println("Number of course slots: "+this.problem.getCourseSlots().size());
+        System.out.println("Number of lab slots: " +this.problem.getLabSlots().size());
+        System.out.println("Number of courses: " + this.problem.getCourses().size());
+        System.out.println("Number of labs: " + this.problem.getLabs().size());
 
     }
 

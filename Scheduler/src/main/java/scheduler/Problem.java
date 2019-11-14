@@ -7,12 +7,14 @@ public class Problem {
     private ArrayList<Slot> courseSlots;
     private ArrayList<Slot> labSlots;
     private ArrayList<Course> courses;
+    private ArrayList<Lab> labs;
 
 
     public Problem(){
         this.courseSlots = new ArrayList<Slot>(); 
         this.labSlots = new ArrayList<Slot>();
         this.courses = new ArrayList<Course>();
+        this.labs = new ArrayList<Lab>();
     }
 
 
@@ -28,6 +30,10 @@ public class Problem {
         this.courses.add(course);
     }
 
+    public void addLab(Lab lab){
+        this.labs.add(lab);
+    }
+
     public ArrayList<Slot> getLabSlots(){
         return this.labSlots;
     }
@@ -39,6 +45,13 @@ public class Problem {
     public ArrayList<Course> getCourses(){
         return this.courses;
     }
+
+    public ArrayList<Lab> getLabs(){
+        return this.labs;
+    }
+
+
+
     
 
 }
