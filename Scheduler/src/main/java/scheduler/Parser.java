@@ -18,6 +18,9 @@ public class Parser {
     private static final Pattern labPattern1 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2})");
     private static final Pattern labPattern2 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
     private static final Pattern timePattern = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2})");
+    private static final Pattern preferencePattern1 = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2}),\\s*([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*(\\d{1,2})");
+    private static final Pattern preferencePattern2 = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2}),\\s*([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*(\\d{1,2})");
+
 
 
 
@@ -257,7 +260,7 @@ public class Parser {
             Matcher regexMatcherCourses = Parser.coursePattern.matcher(trimmedLine);
 
 
-            ArrayList<RoomBooking> bookings = new ArrayList<RoomBooking>();
+            ArrayList<SlotBooking> bookings = new ArrayList<SlotBooking>();
 
 
             while(regexMatcherLabs.find()){
@@ -382,7 +385,7 @@ public class Parser {
                 String labType = regexMatcherLabs1.group(5);
                 String labSection = regexMatcherLabs1.group(6);
 
-                RoomBooking selectedBooking;
+                SlotBooking selectedBooking;
 
                 System.out.println("lab1");
 
@@ -425,7 +428,7 @@ public class Parser {
                     && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
 
                     
-                        RoomBooking selectedBooking = lab;
+                        SlotBooking selectedBooking = lab;
     
     
                         for(Slot courseSlot: problem.getCourseSlots()){
@@ -447,7 +450,7 @@ public class Parser {
                     if(course.getCourseName().equals(courseAbbreviation) && course.getCourseNumber().equals(courseNumber)
                     && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){
                        
-                        RoomBooking selectedBooking = course;
+                        SlotBooking selectedBooking = course;
     
     
                         for(Slot courseSlot: problem.getCourseSlots()){
@@ -485,10 +488,105 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Preference: " + trimmedLine);
+            Preference preference = null;
+
+
+            Matcher matcher1 = Parser.preferencePattern1.matcher(trimmedLine);
+            Matcher matcher2 = Parser.preferencePattern2.matcher(trimmedLine);
+
+            if(matcher1.find()){
+                String day = matcher1.group(1);
+                String startTime = matcher1.group(2);
+                String courseName = matcher1.group(3);
+                String courseNumber = matcher1.group(4);
+                String format = matcher1.group(5);
+
+                if(format.equals("TUT")){
+                    String labFormat = format;
+                    String labSection = matcher1.group(6);
+                    String weight = matcher1.group(7);
+
+                    for(Lab lab: problem.getLabs()){
+                        if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
+                            && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+
+                                for(Slot slot: problem.getLabSlots()){
+                                    if(slot.getDay().equals(day) && slot.getStartTime().equals(startTime)){
+                                       preference = new Preference(slot, lab, Integer.parseInt(weight)); 
+                                       this.problem.addPreference(preference);
+                                    }
+                                }
+
+                    }
+                }
+            }else{
+                    String courseFormat = format;
+                    String courseSection = matcher1.group(6);
+                    String weight = matcher1.group(7);
+
+                    for(Course course: problem.getCourses()){
+                        if(course.getCourseName().equals(courseName) && course.getCourseNumber().equals(courseNumber)
+                            && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){ 
+
+
+                                for(Slot slot: problem.getCourseSlots()){
+                                    if(slot.getDay().equals(day) && slot.getStartTime().equals(startTime)){
+                                       preference = new Preference(slot, course, Integer.parseInt(weight)); 
+                                       this.problem.addPreference(preference);
+                                    }
+                                }
+                                
+                    }
+
+                }
 
         }
+    }else if(matcher2.find()){
+
+
+            String day = matcher2.group(1);
+            String startTime = matcher2.group(2);
+            String courseName = matcher2.group(3);
+            String courseNumber = matcher2.group(4);
+            String courseFormat = matcher2.group(5);
+            String courseSection = matcher2.group(6);
+            String labFomrat = matcher2.group(7);
+            String labSection = matcher2.group(8);
+            String weight = matcher2.group(9);
+
+            for(Lab lab: problem.getLabs()){
+
+                if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
+                    && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
+                    && lab.getLabFormat().equals(labFomrat) && lab.getLabSection().equals(labSection)){
+
+                    for(Slot labSlot: problem.getLabSlots()){
+                        if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
+                                preference = new Preference(labSlot, lab, Integer.parseInt(weight)); 
+                                this.problem.addPreference(preference);
+
+                        }
+                    }
+                        
+            }
+
+        }
+
+
+            System.out.println("Preference: " + trimmedLine);
+
+            if(preference == null){
+                System.out.println("Either the lab or the slot does not exist");
+            }
+
+
+
+
+
     }
+
+}
+}
 
 
 
@@ -534,8 +632,8 @@ public class Parser {
         System.out.println("Number of labs: " + this.problem.getLabs().size());
         System.out.println("Number of not compatible: " + this.problem.getNotCompatible().size());
         System.out.println("Number of unwanted: " + this.problem.getUnwanted().size());
+        System.out.println("Number of Preferences: " + this.problem.getPrefrences().size());
+
     }
-
-
     
 }

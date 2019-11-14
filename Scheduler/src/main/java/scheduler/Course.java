@@ -1,6 +1,6 @@
 package scheduler;
 
-public class Course extends RoomBooking{
+public class Course extends SlotBooking{
 
     private String format;
     private String section;

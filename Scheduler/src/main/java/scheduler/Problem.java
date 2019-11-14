@@ -10,6 +10,7 @@ public class Problem {
     private ArrayList<Lab> labs;
     private ArrayList<NotCompatible> notCompatible;
     private ArrayList<Unwanted> unwanted;
+    private ArrayList<Preference> preferences;
 
 
     public Problem(){
@@ -19,6 +20,8 @@ public class Problem {
         this.labs = new ArrayList<Lab>();
         this.notCompatible = new ArrayList<NotCompatible>();
         this.unwanted = new ArrayList<Unwanted>();
+        this.preferences = new ArrayList<Preference>();
+
     }
 
 
@@ -46,6 +49,10 @@ public class Problem {
         this.unwanted.add(unwanted);
     }
 
+    public void addPreference(Preference preference){
+        this.preferences.add(preference);
+    }
+
     public ArrayList<Slot> getLabSlots(){
         return this.labSlots;
     }
@@ -68,6 +75,10 @@ public class Problem {
 
     public ArrayList<Unwanted> getUnwanted(){
         return this.unwanted;
+    }
+
+    public ArrayList<Preference> getPrefrences(){
+        return this.preferences;
     }
 
 

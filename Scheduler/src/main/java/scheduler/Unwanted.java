@@ -3,9 +3,9 @@ package scheduler;
 public class Unwanted {
 
     private Slot slot;
-    private RoomBooking booking;
+    private SlotBooking booking;
 
-    public Unwanted(RoomBooking booking, Slot slot){
+    public Unwanted(SlotBooking booking, Slot slot){
 
         this.booking = booking;
         this.slot = slot;
@@ -15,7 +15,7 @@ public class Unwanted {
         return this.slot;
     }
 
-    public RoomBooking getRoomBooking(){
+    public SlotBooking getSlotBooking(){
         return this.booking;
     }
     

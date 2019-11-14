@@ -4,12 +4,12 @@ package scheduler;
  * Abstract class extended by Course and Lab classes
  */
 
-public abstract class RoomBooking {
+public abstract class SlotBooking {
 
     private String courseName;
     private String courseNumber;
 
-    public RoomBooking(String courseName, String courseNumber){
+    public SlotBooking(String courseName, String courseNumber){
 
         this.courseName = courseName;
         this.courseNumber = courseNumber;
