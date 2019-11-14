@@ -573,6 +573,8 @@ public class Parser {
         }
 
 
+
+
             System.out.println("Preference: " + trimmedLine);
 
             if(preference == null){
@@ -603,10 +605,81 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Pair: " + trimmedLine);
+            Matcher matcherLab = Parser.labPattern1.matcher(trimmedLine);
+            Matcher matcherCourse = Parser.coursePattern.matcher(trimmedLine);
+
+            ArrayList<SlotBooking> booking = new ArrayList<SlotBooking>();
+
+            while(matcherLab.find()){
+            
+                
+                String courseName =  matcherLab.group(1);
+                String courseNumber = matcherLab.group(2);
+                String courseFormat = matcherLab.group(3);
+                String courseSection = matcherLab.group(4);
+                String labFormat = matcherLab.group(5);
+                String labSection = matcherLab.group(6);
+
+                for(Lab lab: this.problem.getLabs()){
+
+                    if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
+                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+
+                            booking.add(lab);
+
+                }
+
+            }
 
         }
+
+        while(matcherCourse.find()){
+
+            String courseName = matcherCourse.group(1);
+            String courseNumber = matcherCourse.group(2);
+            String format = matcherCourse.group(3);
+
+            if(format.equals("TUT")){
+                String labFormat = format;
+                String labSection = matcherCourse.group(4);
+
+                for(Lab lab: problem.getLabs()){
+                    if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
+                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+
+                            if(booking.size()< 2){
+                                booking.add(lab);
+                            }
+
+
+                }
+            }
+        }else{
+                String courseFormat = format;
+                String courseSection = matcherCourse.group(4);
+
+                for(Course course: problem.getCourses()){
+                    if(course.getCourseName().equals(courseName) && course.getCourseNumber().equals(courseNumber)
+                        && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){ 
+
+                            if(booking.size()< 2){
+                                booking.add(course);
+                            }
+                            
+                }
+
+            }
+
     }
+
+      }
+
+      this.problem.addPair(new Pair(booking.get(0), booking.get(1)));
+
+        System.out.println("Pair: " + trimmedLine);
+    }
+}
 
 
     public void parsePartialAssignments(BufferedReader reader) throws IOException{
@@ -633,6 +706,7 @@ public class Parser {
         System.out.println("Number of not compatible: " + this.problem.getNotCompatible().size());
         System.out.println("Number of unwanted: " + this.problem.getUnwanted().size());
         System.out.println("Number of Preferences: " + this.problem.getPrefrences().size());
+        System.out.println("Number of pairs: " + this.problem.getPairs().size());
 
     }
     
