@@ -6,9 +6,116 @@ package scheduler;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.After;
+
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
+
+    // @Before
+    // public void setUp() throws IOException{
+    //     String inputFile = "sample_input.txt";
+    //     File file = new File(inputFile);
+    
+    //     BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+    
+    //     String line;
+    //     // while((line = reader.readLine()) != null){
+    //     //     String trimmedLine = line.trim();
+    //     //     . . . 
+    // }
+
+
+
+    @Test
+    public void testAppHasAGreeting() {
         App classUnderTest = new App();
         assertNotNull("app should have a greeting", classUnderTest.getGreeting());
     }
+
+    @Test
+    public void testParser() throws IOException {
+        Parser classUnderTest = new Parser();
+        String inputFile = "sample_input.txt";
+        System.out.println("printed line");
+        classUnderTest.parseFile(inputFile);
+        // assertNotNull("Fucked up", classUnderTest);
+    }
+
+    @Test
+    public void testParseCourseSlots() throws IOException{
+        Parser classUnderTest = new Parser();
+        String inputFile = "courseSlots.txt";
+        File file = new File(inputFile);
+    
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+    
+        String line;
+
+        classUnderTest.parseCourseSlots(reader);
+        ArrayList<Slot> = classUnderTest.getLabSlots();
+        // while((line = reader.readLine()) != null){
+        //     String trimmedLine = line.trim();
+        //     . . . 
+    }
 }
+// set up, tear down, set up class, tear down class 
+// beforeClass 
+// // gets ran everytime the tests start. 
+// before 
+// // every method thats labeled @test
+
+// tear down - runs after each class
+// After
+// gets executed after execution of every test. don't want to have the same vector everytime
+
+// afterClass
+// executed after executing all the tests
+
+// test
+// before each method to clarify to j unit that its a test method, or some shit
+
+// Method names don't matter 
+// How does this play into our tests.
+
+// If you want to test objects, you might have too override equals in the 
+// class generating the object. Different objects. All of the objexts you are asserting
+// work when you do the equals method. 
+
+    // App classUnderTest = new App(); //need object to test, i don;t know if its class
+    
+    // @BeforeClass
+    // public static void setUpClass(){
+    //     System.out.println("Set Up Class");
+    // }
+    
+    // @Before 
+    // public void setUp(){
+    //     System.out.println("setup");
+    //     // Parser prb = new Parser();
+    // }
+
+    // @After 
+    // public void tearDown(){
+    //     System.out.println("Teardown");
+    //     // prb = null;
+    // }
+
+    // @AfterClass
+    // public void tearDownClass(){
+    //     System.out.println("====");
+    // }
+
+    // @Test
+    // public void testParseFile(){
+    //     Parser expected = new Parser();
+    //     Parser result = prb.parseFile("sample_input.txt");
+        
+    //     assertEquals(expected, result);
+    // }
