@@ -33,6 +33,10 @@ public class Parser {
 
     }
 
+    public Problem getProblem(){
+        return this.problem;
+    }
+
 
     public void parseFile(String fileName) throws IOException{
 
