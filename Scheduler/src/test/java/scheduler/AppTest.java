@@ -34,6 +34,8 @@ public class AppTest {
 
     public static void testParserHelperFunctions(Parser parser){
 
+        
+
 
     }
 
@@ -46,7 +48,6 @@ public class AppTest {
         ArrayList<Course> courses = problem.getCourses();
 
         ArrayList<Lab> labs = problem.getLabs();
-/*
         assertEquals("Number of course slots: ", 3, courseSlots.size());
 
         testSlot(courseSlots.get(0), "MO", "8:00", 3,2);
@@ -61,22 +62,27 @@ public class AppTest {
 
         assertEquals("Number of courses: ", 4, courses.size());
 
-        testCourse(courses.get(0),"CPSC","433","LEC","01");
-        testCourse(courses.get(1), "CPSC", "433", "LEC", "02");
-        testCourse(courses.get(2), "SENG", "311", "LEC", "01");
-        testCourse(courses.get(3), "CPSC", "567", "LEC", "01");
+        testCourse(courses.get(0),"CPSC 433","LEC 01");
+        testCourse(courses.get(1), "CPSC 433", "LEC 02");
+        testCourse(courses.get(2), "SENG 311", "LEC 01");
+        testCourse(courses.get(3), "CPSC 567", "LEC 01");
 
         assertEquals("Number of labs: ", 4, labs.size());
 
-        testLab(labs.get(0), "CPSC", "433", "LEC", "01", "TUT", "01");
-        testLab(labs.get(1), "CPSC", "433", "LEC", "02", "LAB", "02");
-        testLab(labs.get(2), "SENG", "311", "LEC", "01", "TUT", "01");
-        testLab(labs.get(3), "CPSC", "567", null , null, "TUT", "01");
-        */
+        testLab(labs.get(0), "CPSC 433", "LEC 01", "TUT", "01");
+        testLab(labs.get(1), "CPSC 433", "LEC 02", "LAB", "02");
+        testLab(labs.get(2), "SENG 311", "LEC 01", "TUT", "01");
+        testLab(labs.get(3), "CPSC 567", null , "TUT", "01");
+
+        testUnwantedSlot(problem.getCourse("CPSC 433", "LEC 01").getUnwantedSlots().get(0), "MO", "8:00");
+
+        testPreferences(problem.getCourse("CPSC 433", "LEC 02").getPreferences().get(0), 10, "TU", "9:30");
+
+        testPaired(problem.getCourse("SENG 311", "LEC 01").getPaired().get(0), "CPSC 567");
+        testPaired(problem.getCourse("CPSC 567", "LEC 01").getPaired().get(0), "SENG 311");
 
     }
 
-    /*
     public static void testSlot(Slot slot, String day, String startTime, Integer courseMax, Integer courseMin){
         
         assertEquals("day: ", day, slot.getDay());
@@ -88,21 +94,41 @@ public class AppTest {
 
 
 
-    public static void testCourse(Course course, String courseName, String courseNumber, String courseFromat, String section){
+    public static void testCourse(Course course, String courseIdentifier, String courseSection){
 
-        assertEquals("course name", courseName, course.getCourseName());
-        assertEquals("course number", courseNumber, course.getCourseNumber());
-        assertEquals("course format", courseFromat, course.getFormat());
-        assertEquals("course section", section, course.getSection());
+        assertEquals("course identifier: ", courseIdentifier, course.getCourseIdentifier());
+        assertEquals("course section: ", courseSection, courseSection);
     }
 
-    public static void testLab(Lab lab, String courseIdentifier , String courseFormat, String courseSection, String labFormat, String labSection){
-        assertEquals("Course name: ", courseIdentifier, lab.getCourseName());
-        assertEquals("course format: ", courseFormat, lab.getCourseFormat());
-        assertEquals("course section: ", courseSection, lab.getCourseSection());
+    public static void testLab(Lab lab, String courseIdentifier , String courseSection, String labType, String labSection){
+
+        assertEquals("Course identifier: ", courseIdentifier, lab.getCourseIdentifier());
+
+        if(lab instanceof ExclusiveLab){
+            assertEquals("Course section: ", courseSection, ((ExclusiveLab) lab).getCourseSection());
+        }
+
+        assertEquals("lab type: ", labType, lab.getLabType());
         assertEquals("lab section: ", labSection, lab.getLabSection());
     }
-    */
+
+    public static void testUnwantedSlot(Slot slot, String day, String startTime){
+        assertEquals("Day: ", day, slot.getDay());
+        assertEquals("Start Time: ", startTime, slot.getStartTime());
+    }
+
+    public static void testPreferences(Preference preference, int weight, String slotDay, String slotStartTime){
+        assertEquals("weight: ", weight, preference.getWeight());
+        assertEquals("day: ", slotDay, preference.getPreferedSlot().getDay());
+        assertEquals("start time: ", slotStartTime, preference.getPreferedSlot().getStartTime());
+    }
+
+
+    public static void testPaired(SlotBooking booking, String courseIdentifier){
+        assertEquals("Course Identifier: ", booking.getCourseIdentifier(), courseIdentifier);
+    }
+
+    
 
 
 }

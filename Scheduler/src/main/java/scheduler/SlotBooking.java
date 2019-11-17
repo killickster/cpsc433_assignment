@@ -1,5 +1,7 @@
 package scheduler;
 
+import java.util.ArrayList;
+
 /**
  * Abstract class extended by Course and Lab classes
  */
@@ -7,15 +9,47 @@ package scheduler;
 public abstract class SlotBooking {
 
     String courseIdentifier;
+    ArrayList<Slot> unwantedSlots;
+    ArrayList<Preference> preferences;
+    ArrayList<SlotBooking> paired;           //holds other slot bookings this slot booking is paired with
 
     public SlotBooking(String courseIdentifier){
 
         this.courseIdentifier = courseIdentifier;
+        this.unwantedSlots = new ArrayList<Slot>();
+        this.preferences = new ArrayList<Preference>();
+        this.paired = new ArrayList<SlotBooking>();
 
+    }
+
+    public ArrayList<Preference> getPreferences(){
+        return this.preferences;
+    }
+
+    public ArrayList<Slot> getUnwantedSlots(){
+        return this.unwantedSlots;
+    }
+
+    public ArrayList<SlotBooking> getPaired(){
+        return this.paired;
+    }
+
+    public void addPreference(Preference preference){
+        this.preferences.add(preference);
+    }
+
+    public void addPaired(SlotBooking booking){
+        this.paired.add(booking);
+    }
+
+    public void addUnwantedSlot(Slot slot){
+        this.unwantedSlots.add(slot);
     }
 
     public String getCourseIdentifier(){
         return courseIdentifier;
     }
+
+
 
 }

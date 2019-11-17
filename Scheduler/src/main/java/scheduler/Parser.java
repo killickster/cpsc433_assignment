@@ -305,39 +305,21 @@ public class Parser {
                     String labType = format;
                     String labSection = regexMatcherCourses.group(4);
 
-                    for(Lab lab: problem.getLabs()){
-                        if(lab.getCourseIdentifier().equals(courseIdentifier)
-                        && lab.getLabType().equals(labType) && lab.getLabSection().equals(labSection)){
-
-                            if(bookings.size() < 2){
-                                bookings.add(lab);
-                            }
-                   
-                        }
+                    Lab lab;
+                    if((lab = this.problem.getLab(courseIdentifier, labType, labSection)) != null){
+                        bookings.add(lab);
                     }
-
-
-
 
                 }else{
                     String section = regexMatcherCourses.group(4);
                     String courseFormat = format;
                     String courseSection = courseFormat + " " + section;
 
-                    for(Course course: problem.getCourses()){
-                        if(course.getCourseIdentifier().equals(courseIdentifier)
-                        && course.getCourseSection().equals(courseSection)){ 
-    
-                            if(bookings.size() < 2){
-    
-                                bookings.add(course);
 
-                            }
-    
-    
-                        }
+                    Course course;
+                    if((course = this.problem.getCourse(courseIdentifier, courseSection)) != null){
+                        bookings.add(course);
                     }
-
                 }
 
             }
@@ -376,8 +358,6 @@ public class Parser {
             String day = regexMatcherTime.group(1);
             String time = regexMatcherTime.group(2);
 
-            Unwanted unwanted = null;
-            
             if(regexMatcherLabs1.find()){
 
                 String courseAbbreviation = regexMatcherLabs1.group(1);
@@ -398,8 +378,7 @@ public class Parser {
 
                     if((slot = problem.getLabSlot(day, time)) != null){
 
-                        unwanted = new Unwanted(selectedBooking, slot);
-
+                        selectedBooking.addUnwantedSlot(slot);
                     }
                 }
 
@@ -428,7 +407,7 @@ public class Parser {
 
                     if((slot = this.problem.getLabSlot(day, time)) != null){
 
-                        unwanted = new Unwanted(selectedBooking, slot);
+                        selectedBooking.addUnwantedSlot(slot);
 
                     }
                 }
@@ -445,18 +424,14 @@ public class Parser {
                 System.out.println("Unwanted found");
                     Slot slot;
                     if((slot = this.problem.getCourseSlot(day, time)) != null){
-                        unwanted = new Unwanted(selectedBooking, slot);
+                        selectedBooking.addUnwantedSlot(slot);
                     }
                 }
 
             }
 
         }
-
-            this.problem.addUnwanted(unwanted);
             System.out.println("Unwanted: " + trimmedLine);
-
-        
         }  
       }
 
@@ -497,8 +472,8 @@ public class Parser {
 
                     Slot slot;
                     if((slot = this.problem.getLabSlot(day, startTime)) != null){
-                        preference = new Preference(slot, selectedBooking, Integer.parseInt(weight)); 
-                        this.problem.addPreference(preference);
+                        preference = new Preference(slot, Integer.parseInt(weight)); 
+                        selectedBooking.addPreference(preference);
 
                     }
                 }
@@ -512,8 +487,8 @@ public class Parser {
                     if((selectedBooking = problem.getCourse(courseIdentifier, courseSection)) != null){
                         Slot slot;
                         if((slot = this.problem.getCourseSlot(day, startTime)) != null){
-                                preference = new Preference(slot, selectedBooking, Integer.parseInt(weight)); 
-                                this.problem.addPreference(preference);
+                                preference = new Preference(slot, Integer.parseInt(weight)); 
+                                selectedBooking.addPreference(preference);
                         }
                     }
 
@@ -539,9 +514,8 @@ public class Parser {
 
                     Slot slot;
                     if((slot = this.problem.getLabSlot(day, startTime)) != null){
-                        preference = new Preference(slot, selectedBooking, Integer.parseInt(weight)); 
-                        this.problem.addPreference(preference);
-
+                        preference = new Preference(slot, Integer.parseInt(weight));
+                        selectedBooking.addPreference(preference);
                     }
                 }
 
@@ -636,6 +610,9 @@ public class Parser {
 
       this.problem.addPair(new Pair(booking.get(0), booking.get(1)));
 
+      booking.get(0).addPaired(booking.get(1));
+      booking.get(1).addPaired(booking.get(0));
+
         System.out.println("Pair: " + trimmedLine);
     }
 }
@@ -684,9 +661,6 @@ public class Parser {
 
 
             }else if(matcherCourse.find()){
-
-
-                System.out.println("yes");
 
                 String courseName = matcherCourse.group(1);
                 String courseNumber = matcherCourse.group(2);

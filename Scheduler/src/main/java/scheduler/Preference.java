@@ -4,13 +4,11 @@ public class Preference {
 
     
     private Slot preferedSlot;
-    private SlotBooking booking;
     private int weight;
 
 
-    public Preference(Slot slot, SlotBooking booking, int weight){
+    public Preference(Slot slot, int weight){
         this.preferedSlot = slot;
-        this.booking = booking;
         this.weight = weight;
     }
 
@@ -18,7 +16,8 @@ public class Preference {
         return this.preferedSlot;
     }
 
-    public SlotBooking getBooking(){
-        return this.booking;
+    public int getWeight(){
+        return weight;
     }
+
 }
