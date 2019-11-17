@@ -328,9 +328,9 @@ public class Parser {
 
             if(bookings.size() == 2){
 
-                NotCompatible notCompatible = new NotCompatible(bookings.get(0), bookings.get(1));
+                bookings.get(0).addNotCompatible(bookings.get(1));
+                bookings.get(1).addNotCompatible(bookings.get(0));
 
-                this.problem.addNotCompatible(notCompatible);
             }
 
     }
@@ -608,8 +608,6 @@ public class Parser {
 
       }
 
-      this.problem.addPair(new Pair(booking.get(0), booking.get(1)));
-
       booking.get(0).addPaired(booking.get(1));
       booking.get(1).addPaired(booking.get(0));
 
@@ -710,10 +708,6 @@ public class Parser {
         System.out.println("Number of lab slots: " +this.problem.getLabSlots().size());
         System.out.println("Number of courses: " + this.problem.getCourses().size());
         System.out.println("Number of labs: " + this.problem.getLabs().size());
-        System.out.println("Number of not compatible: " + this.problem.getNotCompatible().size());
-        System.out.println("Number of unwanted: " + this.problem.getUnwanted().size());
-        System.out.println("Number of Preferences: " + this.problem.getPrefrences().size());
-        System.out.println("Number of pairs: " + this.problem.getPairs().size());
         System.out.println("Number of partial assignements" + this.problem.getPartialAssignemnts().size());
 
     }
