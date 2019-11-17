@@ -2,22 +2,18 @@ package scheduler;
 
 public class Course extends SlotBooking{
 
-    private String format;
-    private String section;
+    private String courseSection;
     
-    public Course(String abbreviation, String courseNumber, String format, String section){
+    public Course(String courseIdentifier, String courseSection){
 
-        super(abbreviation, courseNumber);
-        this.format = format;
-        this.section = section;
+        super(courseIdentifier);
 
+        this.courseSection = courseSection;
     }
 
-    public String getFormat(){
-        return this.format;
+
+    public String getCourseSection(){
+        return this.courseSection;
     }
 
-    public String getSection(){
-        return this.section;
-    }
 }

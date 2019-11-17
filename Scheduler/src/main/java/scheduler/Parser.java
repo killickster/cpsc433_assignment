@@ -179,10 +179,12 @@ public class Parser {
 
                 String courseAbbreviation = regexMatcher.group(1);
                 String courseNumber = regexMatcher.group(2);
+                String courseIdentifier = courseAbbreviation + " " + courseNumber;
                 String courseFormat = regexMatcher.group(3);
-                String courseSection = regexMatcher.group(4);
+                String section = regexMatcher.group(4);
+                String courseSection = courseFormat + " " + section;
 
-                Course course = new Course(courseAbbreviation, courseNumber, courseFormat, courseSection);
+                Course course = new Course(courseIdentifier, courseSection);
 
                 this.problem.addCourse(course);
             }
@@ -218,15 +220,15 @@ public class Parser {
 
                 String courseAbbreviation = regexMatcher1.group(1);
                 String courseNumber = regexMatcher1.group(2);
+                String courseIdentifier = courseAbbreviation + " " + courseNumber;
                 String courseFormat = regexMatcher1.group(3);
-                String courseSection = regexMatcher1.group(4);
+                String section = regexMatcher1.group(4);
+                String courseSection = courseFormat + " " + section;
                 String labType = regexMatcher1.group(5);
                 String labSection = regexMatcher1.group(6);
 
-                Lab lab = new Lab(courseAbbreviation, courseNumber, labType, labSection);
+                Lab lab = new ExclusiveLab(courseIdentifier,courseSection, labType, labSection);
 
-                lab.setCourseFormat(courseFormat);
-                lab.setCourseSection(courseSection);
 
                 this.problem.addLab(lab);
 
@@ -235,13 +237,11 @@ public class Parser {
 
                 String courseAbbreviation = regexMatcher2.group(1);
                 String courseNumber = regexMatcher2.group(2);
+                String courseIdentifier = courseAbbreviation + " " + courseNumber;
                 String labType = regexMatcher2.group(3);
                 String labSection = regexMatcher2.group(4);
 
-                Lab lab = new Lab(courseAbbreviation, courseNumber, labType, labSection);
-
-                lab.setCourseFormat(null);
-                lab.setCourseSection(null);
+                Lab lab = new Lab(courseIdentifier, labType, labSection);
 
                 this.problem.addLab(lab);
             }
@@ -271,26 +271,22 @@ public class Parser {
 
             while(regexMatcherLabs.find()){
 
-                String courseAbbreviation = regexMatcherLabs.group(1);
+                String courseName = regexMatcherLabs.group(1);
                 String courseNumber = regexMatcherLabs.group(2);
+                String courseIdentifier = courseName + " " + courseNumber;
                 String courseFormat = regexMatcherLabs.group(3);
-                String courseSection = regexMatcherLabs.group(4);
+                String section = regexMatcherLabs.group(4);
+                String courseSection = courseFormat + " " + section;
                 String labType = regexMatcherLabs.group(5);
                 String labSection = regexMatcherLabs.group(6);
 
 
 
-
-                for(Lab lab: problem.getLabs()){
-
-                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
-                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
-                        && lab.getLabFormat().equals(labType) && lab.getLabSection().equals(labSection)){
-
-                            bookings.add(lab);
+                Lab lab;
+                if((lab = this.problem.getLab(courseIdentifier, courseSection, labType, labSection)) != null){
+                    
+                    bookings.add(lab);
                 }
-                
-            }
 
         }
 
@@ -301,18 +297,18 @@ public class Parser {
 
                 String courseAbbreviation = regexMatcherCourses.group(1);
                 String courseNumber = regexMatcherCourses.group(2);
+                String courseIdentifier = courseAbbreviation + " " + courseNumber;
                 String format = regexMatcherCourses.group(3);
-
 
                 if(format.equals("TUT")){
 
-                    String labFormat = format;
+                    String labType = format;
                     String labSection = regexMatcherCourses.group(4);
 
                     for(Lab lab: problem.getLabs()){
-                        if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
-                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
-    
+                        if(lab.getCourseIdentifier().equals(courseIdentifier)
+                        && lab.getLabType().equals(labType) && lab.getLabSection().equals(labSection)){
+
                             if(bookings.size() < 2){
                                 bookings.add(lab);
                             }
@@ -324,12 +320,13 @@ public class Parser {
 
 
                 }else{
-                    String courseSection = regexMatcherCourses.group(4);
+                    String section = regexMatcherCourses.group(4);
                     String courseFormat = format;
+                    String courseSection = courseFormat + " " + section;
 
                     for(Course course: problem.getCourses()){
-                        if(course.getCourseName().equals(courseAbbreviation) && course.getCourseNumber().equals(courseNumber)
-                        && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){
+                        if(course.getCourseIdentifier().equals(courseIdentifier)
+                        && course.getCourseSection().equals(courseSection)){ 
     
                             if(bookings.size() < 2){
     
@@ -350,7 +347,6 @@ public class Parser {
             if(bookings.size() == 2){
 
                 NotCompatible notCompatible = new NotCompatible(bookings.get(0), bookings.get(1));
-
 
                 this.problem.addNotCompatible(notCompatible);
             }
@@ -386,33 +382,27 @@ public class Parser {
 
                 String courseAbbreviation = regexMatcherLabs1.group(1);
                 String courseNumber = regexMatcherLabs1.group(2);
+                String courseIdentifier = courseAbbreviation + " " + courseNumber;
                 String courseFormat = regexMatcherLabs1.group(3);
-                String courseSection = regexMatcherLabs1.group(4);
+                String section = regexMatcherLabs1.group(4);
+                String courseSection = courseFormat + " " + section;
                 String labType = regexMatcherLabs1.group(5);
                 String labSection = regexMatcherLabs1.group(6);
 
                 SlotBooking selectedBooking;
 
-                System.out.println("lab1");
 
-                for(Lab lab: problem.getLabs()){
+                if((selectedBooking = problem.getLab(courseIdentifier, courseSection, labType, labSection)) != null){
 
-                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
-                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
-                        && lab.getLabFormat().equals(labType) && lab.getLabSection().equals(labSection)){
-                            selectedBooking = lab;
+                    Slot slot;
 
-                        for(Slot labSlot: problem.getLabSlots()){
-                            if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(time)){
-                                unwanted = new Unwanted(selectedBooking, labSlot);
-                            }
-                        }
-                            
+                    if((slot = problem.getLabSlot(day, time)) != null){
+
+                        unwanted = new Unwanted(selectedBooking, slot);
+
+                    }
                 }
 
-
-
-            }
         }
 
 
@@ -420,59 +410,48 @@ public class Parser {
 
             String courseAbbreviation = regexMatcherCourses.group(1);
             String courseNumber = regexMatcherCourses.group(2);
+            String courseIdentifier = courseAbbreviation + " " + courseNumber;
             String format = regexMatcherCourses.group(3);
 
             System.out.println("Course");
 
             if(format.equals("TUT")){
 
-                String labFormat = format;
                 String labSection = regexMatcherCourses.group(4);
+                String labType = format;
 
-                for(Lab lab: problem.getLabs()){
-                    if(lab.getCourseName().equals(courseAbbreviation) && lab.getCourseNumber().equals(courseNumber)
-                    && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+                SlotBooking selectedBooking;
 
-                    
-                        SlotBooking selectedBooking = lab;
-    
-    
-                        for(Slot courseSlot: problem.getCourseSlots()){
-                            if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(time)){
-    
-                                unwanted = new Unwanted(selectedBooking, courseSlot);
-    
-                            }
-                        }
-               
+                if((selectedBooking = this.problem.getLab(courseIdentifier, labType, labSection)) != null){
+
+                    Slot slot;
+
+                    if((slot = this.problem.getLabSlot(day, time)) != null){
+
+                        unwanted = new Unwanted(selectedBooking, slot);
+
                     }
                 }
 
             }else{
                 String courseFormat = format;
-                String courseSection = regexMatcherCourses.group(4);
+                String section = regexMatcherCourses.group(4);
+                String courseSection = courseFormat + " " + section;
 
-                for(Course course: problem.getCourses()){
-                    if(course.getCourseName().equals(courseAbbreviation) && course.getCourseNumber().equals(courseNumber)
-                    && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){
-                       
-                        SlotBooking selectedBooking = course;
-    
-    
-                        for(Slot courseSlot: problem.getCourseSlots()){
-                            if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(time)){
-    
-                                unwanted = new Unwanted(selectedBooking, courseSlot);
-    
-                            }
-                        } 
-    
+
+                SlotBooking selectedBooking;
+
+                if((selectedBooking = problem.getCourse(courseIdentifier, courseSection)) != null){
+                System.out.println("Unwanted found");
+                    Slot slot;
+                    if((slot = this.problem.getCourseSlot(day, time)) != null){
+                        unwanted = new Unwanted(selectedBooking, slot);
                     }
                 }
+
             }
 
         }
-
 
             this.problem.addUnwanted(unwanted);
             System.out.println("Unwanted: " + trimmedLine);
@@ -505,78 +484,66 @@ public class Parser {
                 String startTime = matcher1.group(2);
                 String courseName = matcher1.group(3);
                 String courseNumber = matcher1.group(4);
+                String courseIdentifier = courseName + " " + courseNumber;
                 String format = matcher1.group(5);
 
                 if(format.equals("TUT")){
-                    String labFormat = format;
+                    String labType = format;
                     String labSection = matcher1.group(6);
                     String weight = matcher1.group(7);
 
-                    for(Lab lab: problem.getLabs()){
-                        if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
-                            && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+                SlotBooking selectedBooking;
+                if((selectedBooking = this.problem.getLab(courseIdentifier, labType, labSection)) != null){
 
-                                for(Slot slot: problem.getLabSlots()){
-                                    if(slot.getDay().equals(day) && slot.getStartTime().equals(startTime)){
-                                       preference = new Preference(slot, lab, Integer.parseInt(weight)); 
-                                       this.problem.addPreference(preference);
-                                    }
-                                }
+                    Slot slot;
+                    if((slot = this.problem.getLabSlot(day, startTime)) != null){
+                        preference = new Preference(slot, selectedBooking, Integer.parseInt(weight)); 
+                        this.problem.addPreference(preference);
 
                     }
                 }
             }else{
-                    String courseFormat = format;
-                    String courseSection = matcher1.group(6);
-                    String weight = matcher1.group(7);
+                String courseFormat = format;
+                String section = matcher1.group(6);
+                String courseSection = courseFormat + " " + section;
+                String weight = matcher1.group(7);
+                SlotBooking selectedBooking;
 
-                    for(Course course: problem.getCourses()){
-                        if(course.getCourseName().equals(courseName) && course.getCourseNumber().equals(courseNumber)
-                            && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){ 
-
-
-                                for(Slot slot: problem.getCourseSlots()){
-                                    if(slot.getDay().equals(day) && slot.getStartTime().equals(startTime)){
-                                       preference = new Preference(slot, course, Integer.parseInt(weight)); 
-                                       this.problem.addPreference(preference);
-                                    }
-                                }
-                                
-                    }
-
-                }
-
-        }
-    }else if(matcher2.find()){
-
-
-            String day = matcher2.group(1);
-            String startTime = matcher2.group(2);
-            String courseName = matcher2.group(3);
-            String courseNumber = matcher2.group(4);
-            String courseFormat = matcher2.group(5);
-            String courseSection = matcher2.group(6);
-            String labFomrat = matcher2.group(7);
-            String labSection = matcher2.group(8);
-            String weight = matcher2.group(9);
-
-            for(Lab lab: problem.getLabs()){
-
-                if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
-                    && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
-                    && lab.getLabFormat().equals(labFomrat) && lab.getLabSection().equals(labSection)){
-
-                    for(Slot labSlot: problem.getLabSlots()){
-                        if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
-                                preference = new Preference(labSlot, lab, Integer.parseInt(weight)); 
+                    if((selectedBooking = problem.getCourse(courseIdentifier, courseSection)) != null){
+                        Slot slot;
+                        if((slot = this.problem.getCourseSlot(day, startTime)) != null){
+                                preference = new Preference(slot, selectedBooking, Integer.parseInt(weight)); 
                                 this.problem.addPreference(preference);
-
                         }
                     }
-                        
-            }
 
         }
+
+        }else if(matcher2.find()){
+
+
+                String day = matcher2.group(1);
+                String startTime = matcher2.group(2);
+                String courseName = matcher2.group(3);
+                String courseNumber = matcher2.group(4);
+                String courseFormat = matcher2.group(5);
+                String courseIdentifier = courseName + " " + courseNumber;
+                String section = matcher2.group(6);
+                String courseSection = courseFormat + " " + section;
+                String labType = matcher2.group(7);
+                String labSection = matcher2.group(8);
+                String weight = matcher2.group(9);
+
+                SlotBooking selectedBooking;
+                if((selectedBooking = this.problem.getLab(courseIdentifier, courseSection, labType, labSection)) != null){
+
+                    Slot slot;
+                    if((slot = this.problem.getLabSlot(day, startTime)) != null){
+                        preference = new Preference(slot, selectedBooking, Integer.parseInt(weight)); 
+                        this.problem.addPreference(preference);
+
+                    }
+                }
 
 
 
@@ -586,10 +553,6 @@ public class Parser {
             if(preference == null){
                 System.out.println("Either the lab or the slot does not exist");
             }
-
-
-
-
 
     }
 
@@ -621,22 +584,17 @@ public class Parser {
                 
                 String courseName =  matcherLab.group(1);
                 String courseNumber = matcherLab.group(2);
+                String courseIdentifier = courseName + " " + courseNumber;
                 String courseFormat = matcherLab.group(3);
-                String courseSection = matcherLab.group(4);
-                String labFormat = matcherLab.group(5);
+                String section = matcherLab.group(4);
+                String courseSection = courseFormat + " " + section;
+                String labType = matcherLab.group(5);
                 String labSection = matcherLab.group(6);
 
-                for(Lab lab: this.problem.getLabs()){
-
-                    if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
-                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
-                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
-
-                            booking.add(lab);
-
+                SlotBooking selectedBooking;
+                if((selectedBooking = this.problem.getLab(courseIdentifier, courseSection, labType, labSection)) != null){
+                    booking.add(selectedBooking);
                 }
-
-            }
 
         }
 
@@ -644,38 +602,33 @@ public class Parser {
 
             String courseName = matcherCourse.group(1);
             String courseNumber = matcherCourse.group(2);
+            String courseIdentifier = courseName + " " + courseNumber;
             String format = matcherCourse.group(3);
 
             if(format.equals("TUT")){
-                String labFormat = format;
+                String labType = format;
                 String labSection = matcherCourse.group(4);
 
-                for(Lab lab: problem.getLabs()){
-                    if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
-                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+                SlotBooking selectedBooking;
+                if((selectedBooking = this.problem.getLab(courseIdentifier, labType, labSection)) != null){
 
-                            if(booking.size()< 2){
-                                booking.add(lab);
-                            }
+                    if(booking.size()< 2){
+                        booking.add(selectedBooking);
+                    }
 
-
-                }
-            }
+                    }
         }else{
                 String courseFormat = format;
-                String courseSection = matcherCourse.group(4);
+                String section = matcherCourse.group(4);
+                String courseSection = courseFormat + " " + section;
 
-                for(Course course: problem.getCourses()){
-                    if(course.getCourseName().equals(courseName) && course.getCourseNumber().equals(courseNumber)
-                        && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){ 
 
-                            if(booking.size()< 2){
-                                booking.add(course);
-                            }
-                            
+                SlotBooking selectedBooking;
+                if((selectedBooking = this.problem.getCourse(courseIdentifier, courseSection)) != null){
+                    if(booking.size()< 2){
+                        booking.add(selectedBooking);
+                    }
                 }
-
-            }
 
     }
 
@@ -707,33 +660,25 @@ public class Parser {
 
             if(matcherLab.find()){
 
-                System.out.println("yes1");
-
                 String courseName =  matcherLab.group(1);
                 String courseNumber = matcherLab.group(2);
+                String courseIdentifier = courseName + " " + courseNumber;
                 String courseFormat = matcherLab.group(3);
-                String courseSection = matcherLab.group(4);
+                String section = matcherLab.group(4);
+                String courseSection = courseFormat + " " +section;
                 String labFormat = matcherLab.group(5);
                 String labSection = matcherLab.group(6);
                 String day = matcherLab.group(7);
                 String startTime = matcherLab.group(8);
 
-                for(Lab lab: this.problem.getLabs()){
+                Lab lab;
+                if((lab = this.problem.getLab(courseIdentifier, courseSection, labFormat, labSection))!= null){
 
-                    if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
-                        && lab.getCourseFormat().equals(courseFormat) && lab.getCourseSection().equals(courseSection)
-                        && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
-
-                            for(Slot labSlot: problem.getLabSlots()){
-                                if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
-
-                                    this.problem.addPartialAssignment(new PartialAssignment(lab, labSlot));
-        
-                                }
-                            } 
-
-                }
-
+                    Slot slot;
+                    if((slot = this.problem.getLabSlot(day, startTime)) != null){
+                        
+                            this.problem.addPartialAssignment(new PartialAssignment(lab, slot));
+                    }
             }
 
 
@@ -745,52 +690,38 @@ public class Parser {
 
                 String courseName = matcherCourse.group(1);
                 String courseNumber = matcherCourse.group(2);
+                String courseIdentifier = courseName + " " + courseNumber;
                 String format = matcherCourse.group(3);
     
                 if(format.equals("TUT")){
-                    String labFormat = format;
+                    String labType = format;
                     String labSection = matcherCourse.group(4);
                     String day = matcherCourse.group(5);
                     String startTime = matcherCourse.group(6);
     
-                    for(Lab lab: problem.getLabs()){
-                        if(lab.getCourseName().equals(courseName) && lab.getCourseNumber().equals(courseNumber)
-                            && lab.getLabFormat().equals(labFormat) && lab.getLabSection().equals(labSection)){
+                    SlotBooking selectedBooking;
+                    if((selectedBooking = this.problem.getLab(courseIdentifier, labType, labSection)) != null){
 
-                                for(Slot labSlot: problem.getLabSlots()){
-                                    if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
-    
-                                        this.problem.addPartialAssignment(new PartialAssignment(lab, labSlot));
-                                    }
-                                } 
-
-    
+                        Slot slot;
+                        if((slot = this.problem.getLabSlot(day, startTime)) != null){
+                            this.problem.addPartialAssignment(new PartialAssignment(selectedBooking, slot));
+                        }
                     }
-                }
             }else{
                     String courseFormat = format;
-                    String courseSection = matcherCourse.group(4);
+                    String section = matcherCourse.group(4);
+                    String courseSection = courseFormat + " " +section;
                     String day = matcherCourse.group(5);
                     String startTime = matcherCourse.group(6);
-    
-                    for(Course course: problem.getCourses()){
-                        if(course.getCourseName().equals(courseName) && course.getCourseNumber().equals(courseNumber)
-                            && course.getFormat().equals(courseFormat) && course.getSection().equals(courseSection)){ 
-
-                                System.out.println("yes");
-
-                                for(Slot courseSlot: problem.getCourseSlots()){
-                                    if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(startTime)){
-
-                                        this.problem.addPartialAssignment(new PartialAssignment(course, courseSlot));
-
-                                    }
-                                }
-    
-                                
+   
+                    SlotBooking selectedBooking;
+                    if((selectedBooking = problem.getCourse(courseIdentifier, courseSection)) != null){
+                        Slot slot;
+                        if((slot = this.problem.getCourseSlot(day, startTime)) != null){
+                            this.problem.addPartialAssignment(new PartialAssignment(selectedBooking, slot));
+                        }
                     }
-    
-                }
+
 
                 
             }
@@ -812,5 +743,12 @@ public class Parser {
         System.out.println("Number of partial assignements" + this.problem.getPartialAssignemnts().size());
 
     }
+
+
+
+
+
+
+    
     
 }

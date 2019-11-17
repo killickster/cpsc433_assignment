@@ -29,6 +29,80 @@ public class Problem {
     }
 
 
+    public Slot getLabSlot(String day, String startTime){
+        Slot slot = null;
+
+        System.out.println("trying");
+        for(Slot labSlot: this.labSlots){
+            if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
+                slot = labSlot;
+                System.out.println("found");
+            }
+        }
+
+        return slot;
+    }
+
+    public Slot getCourseSlot(String day, String startTime){
+        Slot slot = null;
+
+        System.out.println("trying1");
+        for(Slot courseSlot: this.courseSlots){
+            if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(startTime)){
+                slot = courseSlot;
+
+                System.out.println("found1");
+            }
+        }
+
+        return slot;
+    }
+
+    public Lab getLab(String courseIdentifier, String courseSection, String labType, String labSection){
+
+        Lab selectedLab = null;
+        for(Lab lab: this.labs){
+            if(lab instanceof ExclusiveLab){
+                ExclusiveLab exclusiveLab = (ExclusiveLab) lab;
+                if(exclusiveLab.getCourseIdentifier().equals(courseIdentifier) && exclusiveLab.getCourseSection().equals(courseSection)
+                && exclusiveLab.getLabType().equals(labType) && exclusiveLab.getLabSection().equals(labSection)){
+                   selectedLab = lab;
+
+                System.out.println("finding lab");
+                }
+            }   
+        }
+
+        return selectedLab;
+    }
+
+    public Lab getLab(String courseIdentifier, String labType, String labSection){
+
+        Lab selectedLab = null;
+        for(Lab lab: this.labs){
+            if(!(lab instanceof ExclusiveLab)){
+                if(lab.getCourseIdentifier().equals(courseIdentifier) && lab.getLabType().equals(labType) && lab.getLabSection().equals(labSection)){
+                    selectedLab = lab;
+                }
+            }
+        }
+
+        return selectedLab;
+    }
+
+    public Course getCourse(String courseIdentifier, String courseSection){
+
+        Course selectedCourse = null;
+        for(Course course: this.courses){
+            if(course.getCourseIdentifier().equals(courseIdentifier) && course.getCourseSection().equals(courseSection)){
+                selectedCourse = course;
+            }
+        }
+        return selectedCourse;
+    }
+
+
+
     public void addLabSlot(Slot slot){
         this.labSlots.add(slot);
     }
@@ -100,6 +174,7 @@ public class Problem {
     public ArrayList<PartialAssignment> getPartialAssignemnts(){
         return this.partialAssignments;
     }
+
 
 
 

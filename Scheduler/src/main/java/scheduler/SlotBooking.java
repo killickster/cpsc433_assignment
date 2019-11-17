@@ -6,23 +6,16 @@ package scheduler;
 
 public abstract class SlotBooking {
 
-    private String courseName;
-    private String courseNumber;
+    String courseIdentifier;
 
-    public SlotBooking(String courseName, String courseNumber){
+    public SlotBooking(String courseIdentifier){
 
-        this.courseName = courseName;
-        this.courseNumber = courseNumber;
+        this.courseIdentifier = courseIdentifier;
 
     }
 
-    public String getCourseName(){
-        return this.courseName;
+    public String getCourseIdentifier(){
+        return courseIdentifier;
     }
-
-    public String getCourseNumber(){
-        return this.courseNumber;
-    }
-
 
 }
