@@ -13,6 +13,7 @@ public abstract class SlotBooking {
     ArrayList<Preference> preferences;
     ArrayList<SlotBooking> notCompatible;
     ArrayList<SlotBooking> paired;           //holds other slot bookings this slot booking is paired with
+    Slot assignedSlot;
 
     public SlotBooking(String courseIdentifier){
 
@@ -21,6 +22,7 @@ public abstract class SlotBooking {
         this.preferences = new ArrayList<Preference>();
         this.paired = new ArrayList<SlotBooking>();
         this.notCompatible = new ArrayList<SlotBooking>();
+        assignedSlot = null;
 
     }
 

@@ -16,7 +16,6 @@ public class Parser {
     private static final Pattern slotPattern = Pattern.compile("([A-Z][A-Z]),\\s*(\\d{1,2}:\\d\\d),\\s*(\\d),\\s*(\\d)");
     private static final Pattern coursePattern = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
     private static final Pattern labPattern1 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2})");
-    private static final Pattern labPattern2 = Pattern.compile("([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})");
     private static final Pattern timePattern = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2})");
     private static final Pattern preferencePattern1 = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2}),\\s*([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*(\\d{1,2})");
     private static final Pattern preferencePattern2 = Pattern.compile("([A-Z]{2}),\\s*(\\d{1,2}:\\d{2}),\\s*([A-Z]{4})\\s*(\\d{3})\\s*([A-Z]{3})\\s*(\\d{2})\\s*([A-Z]{3})\\s*(\\d{2}),\\s*(\\d{1,2})");
@@ -134,8 +133,6 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Lab Slot: " + trimmedLine);
-
             Matcher regexMatcher = this.slotPattern.matcher(trimmedLine);
 
             regexMatcher.find();
@@ -210,7 +207,7 @@ public class Parser {
             System.out.println("Lab: " + trimmedLine);
 
             Matcher regexMatcher1 = Parser.labPattern1.matcher(trimmedLine);
-            Matcher regexMatcher2 = Parser.labPattern2.matcher(trimmedLine);
+            Matcher regexMatcher2 = Parser.coursePattern.matcher(trimmedLine);
 
             regexMatcher1.find();
             regexMatcher2.find();
@@ -392,8 +389,6 @@ public class Parser {
             String courseIdentifier = courseAbbreviation + " " + courseNumber;
             String format = regexMatcherCourses.group(3);
 
-            System.out.println("Course");
-
             if(format.equals("TUT")){
 
                 String labSection = regexMatcherCourses.group(4);
@@ -421,7 +416,6 @@ public class Parser {
                 SlotBooking selectedBooking;
 
                 if((selectedBooking = problem.getCourse(courseIdentifier, courseSection)) != null){
-                System.out.println("Unwanted found");
                     Slot slot;
                     if((slot = this.problem.getCourseSlot(day, time)) != null){
                         selectedBooking.addUnwantedSlot(slot);

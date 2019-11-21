@@ -6,6 +6,7 @@ public abstract class Slot {
     private String startTime;
     private Integer coursemax;
     private Integer coursemin;
+    private Integer numberOfCoursesAssigned;
 
 
     public Slot(String day, String startTime, Integer coursemax, Integer coursemin){
@@ -13,6 +14,7 @@ public abstract class Slot {
         this.startTime = startTime;
         this.coursemax = coursemax;
         this.coursemin = coursemin;
+        this.numberOfCoursesAssigned = 0;
     }
 
     public String getDay(){
@@ -45,6 +47,10 @@ public abstract class Slot {
 
     public void setCourseMin(Integer courseMin){
         this.coursemin = coursemin;
+    }
+
+    public Integer getNumberOfCoursesAssigned(){
+        return numberOfCoursesAssigned;
     }
 
 

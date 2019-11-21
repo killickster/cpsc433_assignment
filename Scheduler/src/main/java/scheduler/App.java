@@ -15,5 +15,9 @@ public class App {
         Parser parser = new Parser();
 
         parser.parseFile(args[0]);
+
+        State state = new State(parser.getProblem());
+
+        System.out.println(state.testCourseMaxConstraint());
     }
 }

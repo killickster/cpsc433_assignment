@@ -14,10 +14,8 @@ public class AppTest {
         assertNotNull("app should have a greeting", classUnderTest.getGreeting());
     }
 
-    @Test public void testAppOnInput1() throws IOException{
+    @Test public void testAppOnSampleInput1() throws IOException{
         Parser parser = new Parser();
-
-        testParserHelperFunctions(parser);
 
         try{
             
@@ -32,12 +30,39 @@ public class AppTest {
         }
     }
 
-    public static void testParserHelperFunctions(Parser parser){
+    @Test public void testOnInput1() throws IOException{
+        Parser parser = new Parser();
 
-        
+        try{
+            parser.parseFile("input_1.txt");
+
+            Problem problem = parser.getProblem();
+
+            testInput1(problem);
+        }catch(IOException exception){
+            throw(exception);
+        }
+    }
+
+    public static void testInput1(Problem problem){
+
+        ArrayList<Slot> courseSlots = problem.getCourseSlots();
+
+        ArrayList<Slot> labSlots = problem.getLabSlots();
+
+        ArrayList<Course> courses = problem.getCourses();
+
+        ArrayList<Lab> labs = problem.getLabs();
+
+        assertEquals("Number of course slots: ", 21, courseSlots.size());
+
+        assertEquals("Number of lab slots: ", 32, labSlots.size());
+
+        assertEquals("Number of courses: ", 49, courses.size());
 
 
     }
+
 
     public static void testSample1(Problem problem){
 
