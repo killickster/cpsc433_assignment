@@ -62,6 +62,10 @@ public abstract class SlotBooking {
         return courseIdentifier;
     }
 
+    public Slot getAssignedSlot(){
+        return assignedSlot;
+    }
+
 
 
 }

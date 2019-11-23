@@ -25,11 +25,19 @@ public class AppTest {
 
             testSample1(problem);
 
+            State state = new State(problem);
+
+            testStateSampleInput1(state);
+
+            
+
+
+
         }catch(IOException exception){
             throw(exception);
         }
     }
-
+/*
     @Test public void testOnInput1() throws IOException{
         Parser parser = new Parser();
 
@@ -42,6 +50,12 @@ public class AppTest {
         }catch(IOException exception){
             throw(exception);
         }
+    }
+    */
+
+    public static void testStateSampleInput1(State state){
+        assertTrue(state.testCourseLabTimeConflict());
+        assertTrue(state.testCourseMaxContraint());
     }
 
     public static void testInput1(Problem problem){
@@ -106,6 +120,11 @@ public class AppTest {
         testPaired(problem.getCourse("SENG 311", "LEC 01").getPaired().get(0), "CPSC 567");
         testPaired(problem.getCourse("CPSC 567", "LEC 01").getPaired().get(0), "SENG 311");
 
+        testCourseLabAssignment(problem.getCourse("CPSC 567", "LEC 01"), 1);
+        testCourseLabAssignment(problem.getCourse("CPSC 433", "LEC 01"), 2);
+        testCourseLabAssignment(problem.getCourse("SENG 311", "LEC 01"), 1);
+        testCourseLabAssignment(problem.getCourse("CPSC 433", "LEC 02"), 2);
+
     }
 
     public static void testSlot(Slot slot, String day, String startTime, Integer courseMax, Integer courseMin){
@@ -123,6 +142,11 @@ public class AppTest {
 
         assertEquals("course identifier: ", courseIdentifier, course.getCourseIdentifier());
         assertEquals("course section: ", courseSection, courseSection);
+    }
+
+    public static void testCourseLabAssignment(Course course, int numberOfLabs){
+        assertEquals("number of labs: ", numberOfLabs, course.getLabs().size());
+
     }
 
     public static void testLab(Lab lab, String courseIdentifier , String courseSection, String labType, String labSection){

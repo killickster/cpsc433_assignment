@@ -18,6 +18,5 @@ public class App {
 
         State state = new State(parser.getProblem());
 
-        System.out.println(state.testCourseMaxConstraint());
     }
 }

@@ -212,7 +212,6 @@ public class Parser {
             regexMatcher1.find();
             regexMatcher2.find();
 
-
             if(regexMatcher1.matches()){ 
 
                 String courseAbbreviation = regexMatcher1.group(1);
@@ -226,6 +225,11 @@ public class Parser {
 
                 Lab lab = new ExclusiveLab(courseIdentifier,courseSection, labType, labSection);
 
+                for(Course course: this.problem.getCourses()){
+                    if(course.getCourseIdentifier().equals(courseIdentifier)){
+                        course.getLabs().add(lab);
+                    }
+                }
 
                 this.problem.addLab(lab);
 
@@ -239,7 +243,11 @@ public class Parser {
                 String labSection = regexMatcher2.group(4);
 
                 Lab lab = new Lab(courseIdentifier, labType, labSection);
-
+                for(Course course: this.problem.getCourses()){
+                    if(course.getCourseIdentifier().equals(courseIdentifier)){
+                        course.getLabs().add(lab);
+                    }
+                }
                 this.problem.addLab(lab);
             }
         }
