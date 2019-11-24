@@ -55,7 +55,7 @@ public class State{
        boolean partialAssignments = this.testPartialAssignment();
        boolean unwanted = this.testUnwanted();
 
-       if(courseLabTimeConflict && courseLabTimeConflict && nonCompatible && partialAssignments && unwanted){
+       if(courseMaxConstraint && courseLabTimeConflict && courseLabTimeConflict && nonCompatible && partialAssignments && unwanted){
            return true;
        }else{
            return false;
@@ -123,6 +123,36 @@ public class State{
             }
         }
         return true;
+    }
+
+
+    public void displayState(){
+
+        for(int i = 0 ; i < this.slotBookingsSize; i++){
+            if(slotBookings[i] instanceof Course){
+                Course course = ((Course) slotBookings[i]);
+                if(course.getAssignedSlot() != null){
+                    System.out.println(course.getCourseIdentifier() + " " + course.getCourseSection() + "\t :" + course.getAssignedSlot().getDay() + ", " + course.getAssignedSlot().getStartTime());
+                }
+            }else if(slotBookings[i] instanceof Lab){
+                Lab lab = ((Lab) slotBookings[i]); 
+
+                if(lab.getAssignedSlot() != null){
+                    System.out.println(lab.getCourseIdentifier() + "\t :" + lab.getAssignedSlot().getDay() + ", " + lab.getAssignedSlot().getStartTime());
+                }
+            }else{
+                ExclusiveLab lab = ((ExclusiveLab) slotBookings[i]);
+
+                if(lab.getAssignedSlot() != null){
+
+                    System.out.println(lab.getCourseIdentifier() + " " + lab.getCourseSection() + "\t :" + lab.getAssignedSlot().getDay() + ", " + lab.getAssignedSlot().getStartTime());
+                }
+
+
+            }
+
+        }
+
     }
 
 

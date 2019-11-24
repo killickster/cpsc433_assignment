@@ -18,5 +18,7 @@ public class App {
 
         State state = new State(parser.getProblem());
 
+        state.displayState();
+
     }
 }

@@ -8,7 +8,9 @@ public class ConstraintFunctionTest {
 
     private Problem problem;
 
-    @Test public void testConstraintFunction(){
+
+    public void setup(){
+
 
         this.problem = new Problem();
 
@@ -26,6 +28,11 @@ public class ConstraintFunctionTest {
         Lab lab2 = new Lab("CPSC 411", "LAB", "01");
         Lab lab3 = new Lab("CPSC 313", "LAB", "01");
         Lab lab4 = new Lab("CPSC 413", "LAB", "01");
+
+        course1.addLab(lab1);
+        course2.addLab(lab2);
+        course3.addLab(lab3);
+        course4.addLab(lab4);
 
         problem.addLab(lab1);
         problem.addLab(lab2);
@@ -46,10 +53,39 @@ public class ConstraintFunctionTest {
         problem.addCourseSlot(courseSlot2);
         problem.addCourseSlot(courseSlot3);
 
-        testUnwantedFunction(problem);
-        testNotCompatible(problem);
-
     }
+
+    @Test public void testConstraintFunction1(){
+
+        this.setup();
+        testUnwantedFunction(this.problem);
+    }
+
+    @Test public void testConstraintFunction2(){
+        this.setup();
+        testNotCompatible(this.problem);
+    }
+
+    @Test public void testConstraintFunction3(){
+        this.setup(); 
+        testCourseLabTimeConflict(this.problem);
+    }
+    @Test public void testConstraintFunction4(){
+        this.setup(); 
+        testCourseMaxViolation(this.problem);
+    }
+
+    @Test public void testConstraintFunction5(){
+        this.setup();
+        testPartialAssignmentViolation(this.problem);
+        
+    }
+    @Test public void testConstraintFunction6(){
+
+        this.setup();
+        testScenarioWhichShouldSatisfyConstr(this.problem);
+    }
+
 
     public void testUnwantedFunction(Problem problem){
 
@@ -72,12 +108,68 @@ public class ConstraintFunctionTest {
 
         NotCompatible notCompatible = new NotCompatible(booking1, booking2);
 
+        problem.addNotCompatible(notCompatible);
+
         booking1.assignSlot(problem.getCourseSlot("MO", "8:00"));
         booking2.assignSlot(problem.getCourseSlot("MO", "8:00"));
 
         State state = new State(problem);
 
         assertFalse("This scenario should be not compatible", state.constr());
+    }
+
+    public void testCourseLabTimeConflict(Problem problem){
+
+
+        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
+
+        problem.getCourse("CPSC 433", "LEC 01").getLabs().get(0).assignSlot(problem.getLabSlot("MO", "8:00"));
+
+        State state = new State(problem);
+
+        assertFalse("There is a time conflict between this course and one of its labs", state.constr());
+    }
+
+    public void testCourseMaxViolation(Problem problem){
+
+        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
+        problem.getCourse("CPSC 313", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
+        problem.getCourse("CPSC 411", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
+        problem.getCourse("CPSC 413", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
+
+
+        State state = new State(problem);
+
+        assertFalse("Too many courses assigned to a slot: ", state.constr());
+
+    }
+
+    public void testPartialAssignmentViolation(Problem problem){
+
+        PartialAssignment partialAssignment = new PartialAssignment(problem.getCourse("CPSC 433", "LEC 01"), problem.getCourseSlot("MO", "8:00"));
+
+        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("TU", "10:00"));
+
+        problem.addPartialAssignment(partialAssignment);
+
+        State state = new State(problem);
+
+        assertFalse("This assignment goes against a required partial assignemnt", state.constr());
+    }
+
+    public void testScenarioWhichShouldSatisfyConstr(Problem problem){
+
+        Unwanted unwanted = new Unwanted(problem.getCourse("CPSC 433", "LEC 01"), problem.getCourseSlot("MO", "8:00"));
+
+        problem.addUnwanted(unwanted);
+
+        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("TU", "10:00"));
+
+        State state = new State(problem);
+
+        assertTrue("Should not violate constraints", state.constr());
+
+
     }
 
 }

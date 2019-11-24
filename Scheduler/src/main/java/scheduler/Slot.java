@@ -53,6 +53,11 @@ public abstract class Slot {
         return numberOfCoursesAssigned;
     }
 
+    public void incrementNumberOfCoursesAssigned(){
+        this.numberOfCoursesAssigned+=1;
+    }
+
+
 
 
 

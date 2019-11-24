@@ -8,18 +8,18 @@ import java.util.ArrayList;
 
 public abstract class SlotBooking {
 
-    String courseIdentifier;
-    ArrayList<Preference> preferences;
-    ArrayList<SlotBooking> paired;           //holds other slot bookings this slot booking is paired with
-    Slot assignedSlot;
+    private String courseIdentifier;
+    private ArrayList<Preference> preferences;
+    private ArrayList<SlotBooking> paired;           //holds other slot bookings this slot booking is paired with
+    private Slot assignedSlot;
+
 
     public SlotBooking(String courseIdentifier){
 
         this.courseIdentifier = courseIdentifier;
         this.preferences = new ArrayList<Preference>();
         this.paired = new ArrayList<SlotBooking>();
-        assignedSlot = null;
-
+        this.assignedSlot = null;
     }
 
     public ArrayList<Preference> getPreferences(){
@@ -48,6 +48,7 @@ public abstract class SlotBooking {
 
     public void assignSlot(Slot slot){
         this.assignedSlot = slot;
+        slot.incrementNumberOfCoursesAssigned();
     }
 
 

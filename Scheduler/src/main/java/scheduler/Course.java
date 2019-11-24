@@ -24,4 +24,8 @@ public class Course extends SlotBooking{
         return this.labs;
     }
 
+    public void addLab(Lab lab){
+        this.labs.add(lab);
+    }
+
 }
