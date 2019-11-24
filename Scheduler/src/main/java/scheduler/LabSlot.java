@@ -2,8 +2,8 @@ package scheduler;
 
 public class LabSlot extends Slot {
 
-    public LabSlot(String name, String startTime, Integer coursemax, Integer coursemin){
-        super(name, startTime, coursemax, coursemin);
+    public LabSlot(String day, String startTime, Integer coursemax, Integer coursemin){
+        super(day, startTime, coursemax, coursemin);
     }
 
 }

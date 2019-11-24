@@ -333,8 +333,7 @@ public class Parser {
 
             if(bookings.size() == 2){
 
-                bookings.get(0).addNotCompatible(bookings.get(1));
-                bookings.get(1).addNotCompatible(bookings.get(0));
+                NotCompatible notCompatible = new NotCompatible(bookings.get(0), bookings.get(1));
 
             }
 
@@ -363,6 +362,9 @@ public class Parser {
             String day = regexMatcherTime.group(1);
             String time = regexMatcherTime.group(2);
 
+            ArrayList<SlotBooking> slotBooking = new ArrayList<SlotBooking>();
+            Unwanted unwanted = null;
+
             if(regexMatcherLabs1.find()){
 
                 String courseAbbreviation = regexMatcherLabs1.group(1);
@@ -383,9 +385,18 @@ public class Parser {
 
                     if((slot = problem.getLabSlot(day, time)) != null){
 
-                        selectedBooking.addUnwantedSlot(slot);
+
+                        unwanted = new Unwanted(selectedBooking, slot);
+
+
                     }
+
                 }
+
+                if(unwanted != null){
+                    this.problem.addUnwanted(unwanted);
+                }
+
 
         }
 
@@ -410,7 +421,7 @@ public class Parser {
 
                     if((slot = this.problem.getLabSlot(day, time)) != null){
 
-                        selectedBooking.addUnwantedSlot(slot);
+                        unwanted = new Unwanted(selectedBooking, slot);
 
                     }
                 }
@@ -426,7 +437,7 @@ public class Parser {
                 if((selectedBooking = problem.getCourse(courseIdentifier, courseSection)) != null){
                     Slot slot;
                     if((slot = this.problem.getCourseSlot(day, time)) != null){
-                        selectedBooking.addUnwantedSlot(slot);
+                        unwanted = new Unwanted(selectedBooking, slot);
                     }
                 }
 

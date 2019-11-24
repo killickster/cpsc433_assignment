@@ -36,6 +36,13 @@ jar {
     }
 }
 
+test {
+ filter{
+        includeTestsMatching "ParserTest"
+
+        includeTestsMatching "ConstraintFunctionTest"
+ }   
+}
 //This task copies the jar and moves it to the root directory
 task copyJarToBin(type: Copy) {
         from jar 

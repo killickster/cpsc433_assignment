@@ -10,13 +10,20 @@ public class State{
     private int slotBookingsSize;
     private ArrayList<Slot> slots;
     private Problem problem;
+    private ArrayList<NotCompatible> notCompatible;
+    private ArrayList<PartialAssignment> partialAssignments;
+    private ArrayList<Unwanted> unwanted;
 
     public State(Problem problem){
 
         this.slotBookingsSize = problem.getCourses().size() + problem.getCourses().size();
 
         this.slotBookings = new SlotBooking[this.slotBookingsSize];
+        this.notCompatible = problem.getNotCompatible();
         this.slots = new ArrayList<Slot>();
+        this.partialAssignments = problem.getPartialAssignemnts();
+        this.unwanted = problem.getUwanted();
+
 
         int i = 0;      //Index of current slot booking element
 
@@ -40,11 +47,20 @@ public class State{
     }
 
 
-    public boolean constr(SlotBooking[] slotBookings){
+    public boolean constr(){
 
        boolean courseMaxConstraint = this.testCourseMaxContraint();
+       boolean courseLabTimeConflict = this.testCourseLabTimeConflict();
+       boolean nonCompatible = this.testNonCompatible();
+       boolean partialAssignments = this.testPartialAssignment();
+       boolean unwanted = this.testUnwanted();
 
-       return true;
+       if(courseLabTimeConflict && courseLabTimeConflict && nonCompatible && partialAssignments && unwanted){
+           return true;
+       }else{
+           return false;
+       }
+
     }
 
     public boolean testCourseMaxContraint(){
@@ -74,5 +90,41 @@ public class State{
         }
         return true;
     }
+
+    public boolean testNonCompatible(){
+        for(NotCompatible notCompatible: this.notCompatible){
+            if(notCompatible.booking1.getAssignedSlot().getStartTime().equals(notCompatible.booking2.getAssignedSlot().getStartTime())){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean testPartialAssignment(){
+
+        for(PartialAssignment partialAssignemnt: this.partialAssignments){
+            if(partialAssignemnt.getBooking().getAssignedSlot() != null){
+                if(!partialAssignemnt.getBooking().getAssignedSlot().equals(partialAssignemnt.getSlot())){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean testUnwanted(){
+        for(Unwanted unwanted: this.unwanted){
+
+            if(unwanted.getBooking().getAssignedSlot() != null){
+                if(unwanted.getBooking().getAssignedSlot().equals(unwanted.getSlot())){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
     
 }

@@ -8,11 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
-    }
+public class ParserTest {
 
     @Test public void testAppOnSampleInput1() throws IOException{
         Parser parser = new Parser();
@@ -25,19 +21,13 @@ public class AppTest {
 
             testSample1(problem);
 
-            State state = new State(problem);
-
-            testStateSampleInput1(state);
-
-            
-
 
 
         }catch(IOException exception){
             throw(exception);
         }
     }
-/*
+
     @Test public void testOnInput1() throws IOException{
         Parser parser = new Parser();
 
@@ -51,12 +41,9 @@ public class AppTest {
             throw(exception);
         }
     }
-    */
+    
 
-    public static void testStateSampleInput1(State state){
-        assertTrue(state.testCourseLabTimeConflict());
-        assertTrue(state.testCourseMaxContraint());
-    }
+
 
     public static void testInput1(Problem problem){
 
@@ -113,7 +100,7 @@ public class AppTest {
         testLab(labs.get(2), "SENG 311", "LEC 01", "TUT", "01");
         testLab(labs.get(3), "CPSC 567", null , "TUT", "01");
 
-        testUnwantedSlot(problem.getCourse("CPSC 433", "LEC 01").getUnwantedSlots().get(0), "MO", "8:00");
+        //testUnwantedSlot(problem.getCourse("CPSC 433", "LEC 01").getUnwantedSlots().get(0), "MO", "8:00");
 
         testPreferences(problem.getCourse("CPSC 433", "LEC 02").getPreferences().get(0), 10, "TU", "9:30");
 
@@ -161,10 +148,6 @@ public class AppTest {
         assertEquals("lab section: ", labSection, lab.getLabSection());
     }
 
-    public static void testUnwantedSlot(Slot slot, String day, String startTime){
-        assertEquals("Day: ", day, slot.getDay());
-        assertEquals("Start Time: ", startTime, slot.getStartTime());
-    }
 
     public static void testPreferences(Preference preference, int weight, String slotDay, String slotStartTime){
         assertEquals("weight: ", weight, preference.getWeight());

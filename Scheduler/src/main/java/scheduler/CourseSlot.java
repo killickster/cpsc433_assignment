@@ -2,7 +2,7 @@ package scheduler;
 
 public class CourseSlot extends Slot{
     
-    public CourseSlot(String name, String startTime, Integer coursemax, Integer coursemin){
-        super(name, startTime, coursemax, coursemin);
+    public CourseSlot(String day, String startTime, Integer coursemax, Integer coursemin){
+        super(day, startTime, coursemax, coursemin);
     }
 }

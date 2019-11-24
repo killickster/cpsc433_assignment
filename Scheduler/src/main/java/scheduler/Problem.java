@@ -9,6 +9,8 @@ public class Problem {
     private ArrayList<Course> courses;
     private ArrayList<Lab> labs;
     private ArrayList<PartialAssignment> partialAssignments;
+    private ArrayList<NotCompatible> notCompatible;
+    private ArrayList<Unwanted> unwanted;
 
 
     public Problem(){
@@ -17,6 +19,8 @@ public class Problem {
         this.courses = new ArrayList<Course>();
         this.labs = new ArrayList<Lab>();
         this.partialAssignments = new ArrayList<PartialAssignment>();
+        this.notCompatible = new ArrayList<NotCompatible>();
+        this.unwanted = new ArrayList<Unwanted>();
 
     }
 
@@ -24,11 +28,9 @@ public class Problem {
     public Slot getLabSlot(String day, String startTime){
         Slot slot = null;
 
-        System.out.println("trying");
         for(Slot labSlot: this.labSlots){
             if(labSlot.getDay().equals(day) && labSlot.getStartTime().equals(startTime)){
                 slot = labSlot;
-                System.out.println("found");
             }
         }
 
@@ -38,12 +40,9 @@ public class Problem {
     public Slot getCourseSlot(String day, String startTime){
         Slot slot = null;
 
-        System.out.println("trying1");
         for(Slot courseSlot: this.courseSlots){
             if(courseSlot.getDay().equals(day) && courseSlot.getStartTime().equals(startTime)){
                 slot = courseSlot;
-
-                System.out.println("found1");
             }
         }
 
@@ -111,6 +110,14 @@ public class Problem {
         this.labs.add(lab);
     }
 
+    public void addNotCompatible(NotCompatible notCompatible){
+        this.notCompatible.add(notCompatible);
+    }
+
+    public void addUnwanted(Unwanted unwanted){
+        this.unwanted.add(unwanted);
+    }
+
 
     public void addPartialAssignment(PartialAssignment partialAssignemnt){
         this.partialAssignments.add(partialAssignemnt);
@@ -132,9 +139,17 @@ public class Problem {
         return this.labs;
     }
 
+    public ArrayList<Unwanted> getUwanted(){
+        return this.unwanted;
+    }
+
 
     public ArrayList<PartialAssignment> getPartialAssignemnts(){
         return this.partialAssignments;
+    }
+
+    public ArrayList<NotCompatible> getNotCompatible(){
+        return this.notCompatible;
     }
 
 
