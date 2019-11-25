@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Course extends SlotBooking{
 
-    public static int id = 0;
+    public static int id = 1;
 
     private String courseSection;
     private ArrayList<Lab> labs;

@@ -8,9 +8,10 @@ public class ConstraintFunctionTest {
     
 
     private Problem problem;
+    private OTree otree;
 
 
-    @Test public void setup(){
+    public void setup(){
 
 
         this.problem = new Problem();
@@ -56,6 +57,8 @@ public class ConstraintFunctionTest {
 
         OTree otree = new OTree(problem);
 
+        this.otree = otree;
+
         assertEquals("Should have three course slots: ", 3, otree.getRootNode().getNumberOfCourseSlots());
 
         assertEquals("Should have 2 lab slots: ", 2, otree.getRootNode().getNumberOfLabSlots());
@@ -64,18 +67,42 @@ public class ConstraintFunctionTest {
 
         assertEquals("Should have 4 labs: ", 4, otree.getRootNode().getLabsSize());
 
-        //testConstraintFunction(otree);
-    }
-
-/*
-    public void testCourseMaxFunction(OTree otree){
-
-        
-
-
 
     }
 
-    */
+    @Test public void testLabCourseTimeConflictViolation(){
+
+        this.setup();
+
+        otree.getRootNode().assignSlotToCourse(1);
+
+        assertTrue("State should be valid: ", this.otree.testCourseLabTimeConflict(otree.getRootNode()));
+
+        this.otree.getRootNode().assignSlotToLab(1);
+
+        assertFalse("State should not be valid", this.otree.testCourseLabTimeConflict(otree.getRootNode()));
+
+
+    }
+
+
+    @Test public void testCourseMaxFunction(){
+
+        this.setup();
+
+        otree.getRootNode().assignSlotToCourse(1);
+        otree.getRootNode().assignSlotToCourse(1);
+        otree.getRootNode().assignSlotToCourse(1);
+
+        assertTrue("State should be valid: ", this.otree.testCourseMaxConstraint(otree.getRootNode()));
+
+        otree.getRootNode().assignSlotToCourse(1);
+
+        assertFalse("State should not be valid: ", this.otree.testCourseMaxConstraint(this.otree.getRootNode()));
+
+
+    }
+
+    
 
 }

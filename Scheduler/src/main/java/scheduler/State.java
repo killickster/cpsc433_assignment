@@ -74,13 +74,13 @@ public class State {
     public void assignSlotToCourse(int courseSlotNum){
         this.courses[this.numberOfFilledCourses] = courseSlotNum;
         this.numberOfFilledCourses++;
-        this.courseSlots[courseSlotNum]++;
+        this.courseSlots[courseSlotNum-1]++;
     }
 
     public void assignSlotToLab(int labSlotNum){
         this.labs[this.numberOfFilledLabs] = labSlotNum;
         this.numberOfFilledLabs++;
-        this.labSlots[labSlotNum]++;
+        this.labSlots[labSlotNum-1]++;
     }
 
 

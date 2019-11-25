@@ -36,10 +36,7 @@ public class OTree{
     }
 
     public boolean constr(State state){
-
         boolean courseMaxConstraint = this.testCourseMaxConstraint(state);
-
-
         return courseMaxConstraint;
     }
 
@@ -50,7 +47,7 @@ public class OTree{
 
             int slotNumber = state.getCourses()[i];
 
-            if(state.getCourseSlots()[slotNumber] > this.courseSlots.get(slotNumber).getCourseMax()){
+            if(state.getCourseSlots()[slotNumber-1] > this.courseSlots.get(slotNumber-1).getCourseMax()){
                 return false;
             }
         }
@@ -59,7 +56,7 @@ public class OTree{
 
             int slotNumber = state.getLabs()[i];
 
-            if(state.getLabSlots()[slotNumber] > this.labSlots.get(slotNumber).getCourseMax()){
+            if(state.getLabSlots()[slotNumber-1] > this.labSlots.get(slotNumber-1).getCourseMax()){
                 return false;
             }
         }
@@ -70,22 +67,32 @@ public class OTree{
 
     public boolean testCourseLabTimeConflict(State state){
 
-        String courseDay = this.courseSlots.get(state.getCourses()[state.getNumberOfFilledCourses()-1]).getDay();
-        String courseTime = this.courseSlots.get(state.getCourses()[state.getNumberOfFilledCourses()-1]).getStartTime();
+        int currentlyAssignedCourseId = state.getCourses()[state.getNumberOfFilledCourses()-1];
 
-        ArrayList<Lab> labs = this.courses.get(state.getNumberOfCourseSlots()-1).getLabs();
+
+        String courseDay = this.courseSlots.get(currentlyAssignedCourseId-1).getDay();
+        String courseTime = this.courseSlots.get(currentlyAssignedCourseId-1).getStartTime();
+
+        
+        ArrayList<Lab> labs = this.courses.get(currentlyAssignedCourseId-1).getLabs();
 
         for(Lab lab: labs){
             int id = lab.getId();
 
-            String labDay = this.labSlots.get(state.getLabs()[id]).getDay();
-            String labTime = this.labSlots.get(state.getLabs()[id]).getStartTime();
+            int currentlyAssignedLabId = state.getLabs()[id-1];
 
-            if(labDay.equals(courseDay) && labTime.equals(courseTime)){
-                return false;
+            if(currentlyAssignedLabId != 0){
+                String labDay = this.labSlots.get(currentlyAssignedLabId-1).getDay();
+                String labTime = this.labSlots.get(currentlyAssignedLabId-1).getStartTime();
+
+                if(labDay.equals(courseDay) && labTime.equals(courseTime)){
+
+                    return false;
+                }
             }
 
         }
+
 
         return true;
             
