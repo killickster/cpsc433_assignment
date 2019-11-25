@@ -2,6 +2,7 @@ package scheduler;
 
 import org.junit.Test;
 
+
 import static org.junit.Assert.*;
 public class ConstraintFunctionTest {
     
@@ -9,7 +10,7 @@ public class ConstraintFunctionTest {
     private Problem problem;
 
 
-    public void setup(){
+    @Test public void setup(){
 
 
         this.problem = new Problem();
@@ -53,123 +54,28 @@ public class ConstraintFunctionTest {
         problem.addCourseSlot(courseSlot2);
         problem.addCourseSlot(courseSlot3);
 
+        OTree otree = new OTree(problem);
+
+        assertEquals("Should have three course slots: ", 3, otree.getRootNode().getNumberOfCourseSlots());
+
+        assertEquals("Should have 2 lab slots: ", 2, otree.getRootNode().getNumberOfLabSlots());
+
+        assertEquals("Should have 4 courses: ", 4, otree.getRootNode().getCoursesSize());
+
+        assertEquals("Should have 4 labs: ", 4, otree.getRootNode().getLabsSize());
+
+        //testConstraintFunction(otree);
     }
 
-    @Test public void testConstraintFunction1(){
+/*
+    public void testCourseMaxFunction(OTree otree){
 
-        this.setup();
-        testUnwantedFunction(this.problem);
-    }
-
-    @Test public void testConstraintFunction2(){
-        this.setup();
-        testNotCompatible(this.problem);
-    }
-
-    @Test public void testConstraintFunction3(){
-        this.setup(); 
-        testCourseLabTimeConflict(this.problem);
-    }
-    @Test public void testConstraintFunction4(){
-        this.setup(); 
-        testCourseMaxViolation(this.problem);
-    }
-
-    @Test public void testConstraintFunction5(){
-        this.setup();
-        testPartialAssignmentViolation(this.problem);
         
-    }
-    @Test public void testConstraintFunction6(){
-
-        this.setup();
-        testScenarioWhichShouldSatisfyConstr(this.problem);
-    }
 
 
-    public void testUnwantedFunction(Problem problem){
-
-        Unwanted unwanted = new Unwanted(problem.getCourse("CPSC 433", "LEC 01"), problem.getCourseSlot("MO", "8:00"));
-
-        problem.addUnwanted(unwanted);
-
-        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
-
-        State state = new State(problem);
-
-        assertFalse("unwanted should be false: ",state.constr());
 
     }
 
-    public void testNotCompatible(Problem problem){
-
-        SlotBooking booking1 = problem.getCourse("CPSC 433", "LEC 01");
-        SlotBooking booking2 = problem.getCourse("CPSC 313", "LEC 01");
-
-        NotCompatible notCompatible = new NotCompatible(booking1, booking2);
-
-        problem.addNotCompatible(notCompatible);
-
-        booking1.assignSlot(problem.getCourseSlot("MO", "8:00"));
-        booking2.assignSlot(problem.getCourseSlot("MO", "8:00"));
-
-        State state = new State(problem);
-
-        assertFalse("This scenario should be not compatible", state.constr());
-    }
-
-    public void testCourseLabTimeConflict(Problem problem){
-
-
-        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
-
-        problem.getCourse("CPSC 433", "LEC 01").getLabs().get(0).assignSlot(problem.getLabSlot("MO", "8:00"));
-
-        State state = new State(problem);
-
-        assertFalse("There is a time conflict between this course and one of its labs", state.constr());
-    }
-
-    public void testCourseMaxViolation(Problem problem){
-
-        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
-        problem.getCourse("CPSC 313", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
-        problem.getCourse("CPSC 411", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
-        problem.getCourse("CPSC 413", "LEC 01").assignSlot(problem.getCourseSlot("MO", "8:00"));
-
-
-        State state = new State(problem);
-
-        assertFalse("Too many courses assigned to a slot: ", state.constr());
-
-    }
-
-    public void testPartialAssignmentViolation(Problem problem){
-
-        PartialAssignment partialAssignment = new PartialAssignment(problem.getCourse("CPSC 433", "LEC 01"), problem.getCourseSlot("MO", "8:00"));
-
-        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("TU", "10:00"));
-
-        problem.addPartialAssignment(partialAssignment);
-
-        State state = new State(problem);
-
-        assertFalse("This assignment goes against a required partial assignemnt", state.constr());
-    }
-
-    public void testScenarioWhichShouldSatisfyConstr(Problem problem){
-
-        Unwanted unwanted = new Unwanted(problem.getCourse("CPSC 433", "LEC 01"), problem.getCourseSlot("MO", "8:00"));
-
-        problem.addUnwanted(unwanted);
-
-        problem.getCourse("CPSC 433", "LEC 01").assignSlot(problem.getCourseSlot("TU", "10:00"));
-
-        State state = new State(problem);
-
-        assertTrue("Should not violate constraints", state.constr());
-
-
-    }
+    */
 
 }

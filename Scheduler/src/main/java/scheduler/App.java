@@ -16,9 +16,8 @@ public class App {
 
         parser.parseFile(args[0]);
 
-        State state = new State(parser.getProblem());
+        OTree otree = new OTree(parser.getProblem());
 
-        state.displayState();
-
+        otree.testCourseMaxConstraint(otree.getRootNode());
     }
 }

@@ -2,6 +2,7 @@ package scheduler;
 
 public class Lab extends SlotBooking{
 
+    public static int id = 0;
 
     private String courseId;
     private String labType;
@@ -10,7 +11,7 @@ public class Lab extends SlotBooking{
 
     public Lab(String courseIdentifier, String labType, String labSection){
 
-        super(courseIdentifier);
+        super(courseIdentifier, id++);
         this.labType = labType;
         this.labSection = labSection;
 

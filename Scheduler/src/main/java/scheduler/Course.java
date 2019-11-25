@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 public class Course extends SlotBooking{
 
+    public static int id = 0;
+
     private String courseSection;
     private ArrayList<Lab> labs;
     
     public Course(String courseIdentifier, String courseSection){
 
-        super(courseIdentifier);
+        super(courseIdentifier, id++);
 
         this.courseSection = courseSection;
         this.labs = new ArrayList<Lab>();

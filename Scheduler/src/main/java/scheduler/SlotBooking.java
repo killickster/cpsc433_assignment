@@ -12,14 +12,24 @@ public abstract class SlotBooking {
     private ArrayList<Preference> preferences;
     private ArrayList<SlotBooking> paired;           //holds other slot bookings this slot booking is paired with
     private Slot assignedSlot;
+    private int slotBookingNumber;
+    private int id;
 
-
-    public SlotBooking(String courseIdentifier){
+    public SlotBooking(String courseIdentifier, int id){
 
         this.courseIdentifier = courseIdentifier;
         this.preferences = new ArrayList<Preference>();
         this.paired = new ArrayList<SlotBooking>();
         this.assignedSlot = null;
+        this.id = id;
+    }
+
+    public int getId(){
+        return this.id;
+    }
+
+    public void setSlotBookingNumber(int slotBookingNumber){
+        this.slotBookingNumber = slotBookingNumber;
     }
 
     public ArrayList<Preference> getPreferences(){
