@@ -14,6 +14,8 @@ public class OTree{
     private ArrayList<PartialAssignment> partialAssignments;
     private ArrayList<Unwanted> unwanted;
     private State rootNode;
+    private OTree parent;
+    private ArrayList<OTree> children;
 
     public OTree(Problem problem){
 
@@ -31,7 +33,8 @@ public class OTree{
         this.unwanted = problem.getUwanted();
 
         this.rootNode = new State(numberOfLabs, numberOfCourses, numberOfLabSlots, numberOfCourseSlots);
-
+        this.parent = null; 
+        this.children = new ArrayList<OTree>();
 
     }
 
@@ -103,7 +106,25 @@ public class OTree{
         return this.rootNode;
     }
     
-
+    public OTree getParent() { return this.parent; }
+    public void setParent(OTree parent) { this.parent = parent; }
+    
+    //pops the leftmost child to continue leftmost-dfs. If there are no children, backtracking is required, thus return parent.
+    public OTree getLeftmostChild() {
+    	if (this.children.size() > 0) { return this.children.remove(0); }
+    	else {
+    		System.out.println("This node has no remaining children. Returning this node's parent instead");
+    		return this.parent;
+    	} 
+    }
+    
+    public void generateChildren() {
+    	/*Select the ~first~ unfilled slot and make a copy of this tree/node for each unassigned course or lab w.r.t. the slot type and
+    	 * assign these copies to this.children.
+    	 * As or after children are generated assign each one one of the unassigned courses/labs that determined the number of copies.
+    	 * > Do this by checking SlotBooking(?) for each course/lab (or slot?) to determine the correct number of children. Not sure yet.
+    	*/
+    }
 
 
     /*

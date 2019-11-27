@@ -17,7 +17,22 @@ public class App {
         parser.parseFile(args[0]);
 
         OTree otree = new OTree(parser.getProblem());
-
+        
         otree.testCourseMaxConstraint(otree.getRootNode());
+        /*do the process of testing constraints:
+         * 		if no empty slots && hardconstraints > done
+         * 		elif !hardconstraints > remove node/tree by returning parent
+         * 		else > otree.generateChildren to populate alternatives
+         * 		call  otree.getLeftmostChild to pop the first child else return otree.parent (edge case for no parent of root)
+         * 		repeat (shouldn't be any edge cases for ties 
+         * 
+         * function for all hardconstraints (combining all the commented ones from OTree?
+         */
+        
+        /*
+        if (constr()) {
+        	//TODO
+        }
+        */
     }
 }
