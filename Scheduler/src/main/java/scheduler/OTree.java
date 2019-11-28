@@ -32,6 +32,7 @@ public class OTree{
         this.partialAssignments = problem.getPartialAssignemnts();
         this.unwanted = problem.getUwanted();
 
+        this.problem = problem;
         this.rootNode = new State(numberOfLabs, numberOfCourses, numberOfLabSlots, numberOfCourseSlots);
         this.parent = null; 
         this.children = new ArrayList<OTree>();
@@ -102,12 +103,11 @@ public class OTree{
     }
 
 
-    public State getRootNode(){
-        return this.rootNode;
-    }
-    
+    public State getRootNode() { return this.rootNode; }  
+    public Problem getProblem() { return this.problem; }
     public OTree getParent() { return this.parent; }
     public void setParent(OTree parent) { this.parent = parent; }
+    public int numberOfChildren() { return this.children.size(); }
     
     //pops the leftmost child to continue leftmost-dfs. If there are no children, backtracking is required, thus return parent.
     public OTree getLeftmostChild() {
@@ -125,9 +125,46 @@ public class OTree{
     	 * > Do this by checking SlotBooking(?) for each course/lab (or slot?) to determine the correct number of children. Not sure yet.
     	*/
     	
+    	//this many children
+    	int courseChildren = this.courses.size()-this.rootNode.getNumberOfFilledCourses(); 
+    	int labChildren = 	 this.labs.size()-this.rootNode.getNumberOfFilledLabs();
+    	
+    	//for each course child, add one partial assignment of an unassigned course.
+    	for (int i = 0; i < courseChildren; i++) {
+    		OTree child = new OTree(this.problem);   		
+    		this.children.add(child);
+    		child.setParent(this);
+
+    		for (Course c : courses) {
+    			if (c.getAssignedSlot() == null) {
+    				for (Slot s : courseSlots) {
+    					if (s.getNumberOfCoursesAssigned() < s.getCourseMax()) {
+    						child.getProblem().addPartialAssignment(new PartialAssignment((SlotBooking) c,s));
+    						break;
+    					}
+    				}
+    			}
+    		}
+    	}
+    	//mirrors the above but for labs
+    	for (int i = 0; i < labChildren; i++) {
+    		OTree child = new OTree(this.problem);
+    		child.setParent(this);
+    		this.children.add(child);
+    		for (Lab l : labs) {
+    			if (l.getAssignedSlot() == null) {
+    				for (Slot s : labSlots) {
+    					if (s.getNumberOfCoursesAssigned() < s.getCourseMax()) {
+    						child.getProblem().addPartialAssignment(new PartialAssignment((SlotBooking) l,s));
+    						break;
+    					}
+    				}
+    			}
+    		}
+    	}
     }
 
-    public int numberOfChildren() { return this.children.size(); }
+
 
 
     
