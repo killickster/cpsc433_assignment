@@ -124,9 +124,13 @@ public class OTree{
     	 * As or after children are generated assign each one one of the unassigned courses/labs that determined the number of copies.
     	 * > Do this by checking SlotBooking(?) for each course/lab (or slot?) to determine the correct number of children. Not sure yet.
     	*/
+    	
     }
 
+    public int numberOfChildren() { return this.children.size(); }
 
+
+    
     /*
 
 

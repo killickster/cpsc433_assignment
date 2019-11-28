@@ -18,21 +18,42 @@ public class App {
 
         OTree otree = new OTree(parser.getProblem());
         
+        otree.generateChildren();//make the initial batch of children
+        
+        boolean goal = false;
+        
         otree.testCourseMaxConstraint(otree.getRootNode());
+        
         /*do the process of testing constraints:
          * 		if no empty slots && hardconstraints > done
          * 		elif !hardconstraints > remove node/tree by returning parent
          * 		else > otree.generateChildren to populate alternatives
          * 		call  otree.getLeftmostChild to pop the first child else return otree.parent (edge case for no parent of root)
-         * 		repeat (shouldn't be any edge cases for ties 
-         * 
-         * function for all hardconstraints (combining all the commented ones from OTree?
+         * 		repeat (shouldn't be any edge cases for ties)
          */
-        
-        /*
-        if (constr()) {
-        	//TODO
+        while (goal = false) {
+        	//check if hard constraints are sat along with all courses/labs being assigned
+        	if (otree.getRootNode().getCoursesSize() == otree.getRootNode().getNumberOfFilledCourses() &&
+        		otree.getRootNode().getLabsSize() == otree.getRootNode().getNumberOfFilledLabs() &&
+        		otree.constr(otree.getRootNode()) ) {
+        		
+        		goal = true;        		
+        		
+        	} else { 
+        		//pops the first child in the child list, or returns parent if there are none left.
+        		otree = otree.getLeftmostChild();
+        		//edge case for no solution at the root node
+        		if (otree == null) { break;	}
+        		//make children if they have not been made
+        		if (otree.numberOfChildren() == 0) { otree.generateChildren(); }
+        	}                   	
         }
-        */
+        
+        if (goal = false) {
+        	System.out.println("There exists no valid soluton. ");
+        } else if (goal = true) {
+        	System.out.println("There exists a solution: ");
+        	//print out all of the course/lab assignments? Do we need to do this?
+        }
     }
 }
