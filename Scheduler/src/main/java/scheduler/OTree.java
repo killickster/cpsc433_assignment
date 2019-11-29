@@ -1,6 +1,7 @@
 package scheduler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class OTree{
@@ -55,6 +56,77 @@ public class OTree{
         }
 
         return false;
+   
+    }
+
+    public void traverseTree(){
+
+        State state = this.getRootNode();
+
+        state.generateChildNodes();
+
+
+        while(state.getNumberOfFilledCourses() != this.courses.size() || state.getNumberOfFilledLabs() != this.labs.size()){
+
+
+            ArrayList<State> states = state.getChildNodes();
+
+
+            
+            int deepest = 0;
+            boolean tie = false;
+
+            for(int i = 0; i<states.size(); i++){
+                if(constr(states.get(i)) == false){
+                    states.remove(i);
+                    i--;
+                }
+            }
+
+            for(State childState: states){
+
+                if(childState.getDepth() == deepest){
+                    tie = true;
+                }
+
+                if(childState.getDepth() > deepest){
+                    deepest = childState.getDepth();
+                }
+
+            }
+
+            ArrayList<State> statesOfEqualDepth = new ArrayList<State>();
+
+            for(State cState: states){
+                if(cState.getDepth() == deepest){
+                    statesOfEqualDepth.add(cState);
+                }
+            }
+
+            if(states.size() == 0){
+                for(int i = 0; i < state.getParent().getChildNodes().size(); i++){
+                    if(state.getParent().getChildNodes().get(i).equals(state)){
+                        state.getParent().getChildNodes().remove(i);
+                    }
+                }
+
+                state = state.getParent();
+            }
+
+            Collections.sort(states);
+
+            if(states.size() > 0){
+                state = states.get(0);
+
+                state.generateChildNodes();
+            }
+
+        this.displayState(state);
+        }
+
+
+
+
     }
 
 
@@ -82,6 +154,8 @@ public class OTree{
     }
 
     public boolean testCourseLabTimeConflict(State state){
+
+        if(state.getNumberOfFilledCourses()-1 != -1){
 
         //System.out.println(state.getNumberOfFilledCourses());
         int slotIdForCurrentlyAssignedCourse = state.getCourses()[state.getNumberOfFilledCourses()-1];
@@ -114,6 +188,7 @@ public class OTree{
         }
 
 
+    }
         return true;
             
     }
@@ -216,7 +291,6 @@ public class OTree{
 
             }
 
-            System.out.println(slotId);
 
             if(slotId != 0 && slotId != pa.getSlot().getId()){
                 return false;
@@ -257,22 +331,21 @@ public class OTree{
 
     public boolean testEveningSlotRequirements(State state){
 
-        int slotIdForCurrentlyAssignedCourse = state.getCourses()[state.getNumberOfFilledCourses()-1];
 
-        System.out.println(this.courses.get(state.getNumberOfFilledCourses()-1).isEvening());
+        if(state.getNumberOfFilledCourses() != 0){
+        int slotIdForCurrentlyAssignedCourse = state.getCourses()[state.getNumberOfFilledCourses()-1];
 
         if(this.courses.get(state.getNumberOfFilledCourses()-1).isEvening()){
 
             Slot slot = this.courseSlots.get(slotIdForCurrentlyAssignedCourse-1);
-
-            System.out.println(slot.isEvening());
 
             if(!slot.isEvening()){
                 return false;
             }
 
         }
-        
+
+    }
         return true;   
     }
 
@@ -446,35 +519,28 @@ public class OTree{
         return true;
     }
 
+    */
 
-    public void displayState(){
+    public void displayState(State state){
 
-        for(int i = 0 ; i < this.slotBookingsSize; i++){
-            if(slotBookings[i] instanceof Course){
-                Course course = ((Course) slotBookings[i]);
-                if(course.getAssignedSlot() != null){
-                    System.out.println(course.getCourseIdentifier() + " " + course.getCourseSection() + "\t :" + course.getAssignedSlot().getDay() + ", " + course.getAssignedSlot().getStartTime());
-                }
-            }else if(slotBookings[i] instanceof Lab){
-                Lab lab = ((Lab) slotBookings[i]); 
+        for(int i = 0; i < state.getNumberOfFilledCourses(); i++){
 
-                if(lab.getAssignedSlot() != null){
-                    System.out.println(lab.getCourseIdentifier() + "\t :" + lab.getAssignedSlot().getDay() + ", " + lab.getAssignedSlot().getStartTime());
-                }
-            }else{
-                ExclusiveLab lab = ((ExclusiveLab) slotBookings[i]);
+            Course course = this.courses.get(i);
 
-                if(lab.getAssignedSlot() != null){
-
-                    System.out.println(lab.getCourseIdentifier() + " " + lab.getCourseSection() + "\t :" + lab.getAssignedSlot().getDay() + ", " + lab.getAssignedSlot().getStartTime());
-                }
+            Slot slot = this.courseSlots.get(state.getCourses()[i]-1);
 
 
-            }
-
+            System.out.println("Course: " + course.getCourseIdentifier() + "\t" + course.getCourseSection() + " \t: " + slot.getDay()  + ", " + slot.getStartTime());
         }
 
-    }
-    */
-    
+        for(int i = 0; i < state.getNumberOfFilledLabs(); i++){
+
+            Lab lab = this.labs.get(i);
+
+            Slot slot = this.labSlots.get(state.getLabs()[i]-1);
+
+            System.out.println("Lab: " + lab.getCourseIdentifier() + "\t" + lab.getLabType() + " " + lab.getLabSection() + " \t: " + slot.getDay()  + ", " + slot.getStartTime());
+        }
+
+    }    
 }

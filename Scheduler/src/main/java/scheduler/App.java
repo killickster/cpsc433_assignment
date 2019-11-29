@@ -17,6 +17,8 @@ public class App {
         parser.parseFile(args[0]);
 
         OTree otree = new OTree(parser.getProblem());
+
+        otree.traverseTree();
        /* 
         otree.generateChildren();//make the initial batch of children
         
