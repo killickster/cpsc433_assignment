@@ -2,6 +2,7 @@ package scheduler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 
 public class OTree{
@@ -32,6 +33,7 @@ public class OTree{
         this.notCompatible = problem.getNotCompatible();
         this.partialAssignments = problem.getPartialAssignemnts();
         this.unwanted = problem.getUwanted();
+        System.out.println("size of unwanted: " + this.unwanted.size());
 
         this.problem = problem;
         this.rootNode = new State(numberOfLabs, numberOfCourses, numberOfLabSlots, numberOfCourseSlots);
@@ -59,16 +61,20 @@ public class OTree{
    
     }
 
-    public void traverseTree(){
+    public void traverseTree(Random rand, boolean random){
 
         State state = this.getRootNode();
 
         state.generateChildNodes();
 
+        int numberOfOperations = 0;
+
+
 
         while(state.getNumberOfFilledCourses() != this.courses.size() || state.getNumberOfFilledLabs() != this.labs.size()){
 
 
+            numberOfOperations++;
             ArrayList<State> states = state.getChildNodes();
 
 
@@ -110,19 +116,42 @@ public class OTree{
                     }
                 }
 
+                System.out.println("going up");
+
                 state = state.getParent();
             }
 
+
             Collections.sort(states);
 
-            if(states.size() > 0){
+            if(states.size() > 0 && !random){
+
+                int x = rand.nextInt((states.size()-1 - 0) + 1) + 0;
+
+                //System.out.println("size" + states.size());
+                //System.out.println("selected" + x);
+
+                state = states.get(x);
+
+                state.generateChildNodes();
+            }else if(states.size() > 0 && random){
+//                System.out.println("size" + states.size());
+ 
                 state = states.get(0);
 
                 state.generateChildNodes();
             }
 
-        this.displayState(state);
+
         }
+
+        this.displayState(state);
+
+        System.out.println(numberOfOperations);
+
+        System.out.println("Depth: " + state.getDepth());
+
+        System.out.println(constr(state));
 
 
 
@@ -217,7 +246,7 @@ public class OTree{
 
                 if(state.getCourses()[id1-1] != 0){
 
-                Slot slot = this.labSlots.get(id1-1);
+                Slot slot = this.courseSlots.get(state.getCourses()[id1-1]-1);
 
                 slot1Day = slot.getDay();
 
@@ -228,8 +257,8 @@ public class OTree{
             }else{
 
                 if(state.getLabs()[id1-1] != 0){
-               
-                Slot slot = this.labSlots.get(id1-1);
+              
+                Slot slot = this.labSlots.get(state.getLabs()[id1-1]-1);
 
                 slot1Day = slot.getDay();
 
@@ -241,7 +270,7 @@ public class OTree{
 
                 if(state.getCourses()[id2-1] != 0){
 
-                Slot slot = this.courseSlots.get(id1-1);
+                Slot slot = this.courseSlots.get(state.getCourses()[id2-1]-1);
 
                 slot2Day = slot.getDay();
 
@@ -251,9 +280,10 @@ public class OTree{
 
             }else{
 
-                if(state.getLabs()[id1-1] != 0){
-               
-                Slot slot = this.labSlots.get(id1-1);
+                if(state.getLabs()[id2-1] != 0){
+              
+
+                Slot slot = this.labSlots.get(state.getLabs()[id2-1]-1);
 
                 slot2Day = slot.getDay();
 
@@ -261,8 +291,9 @@ public class OTree{
                 }
             }
 
-            if(slot1Day.equals(slot2Day) && slot1Time.equals(slot2Time)){
-                return true;
+
+            if(slot1Day != null && slot1Time != null && slot2Day != null && slot2Time != null && slot1Day.equals(slot2Day) && slot1Time.equals(slot2Time)){
+                return false;
             }
 
         }
@@ -304,7 +335,10 @@ public class OTree{
 
     public boolean testUnwanted(State state){
 
+        //System.out.println(this.unwanted.size());
         for(Unwanted unwanted: this.unwanted){
+
+
 
             int slotId;
 

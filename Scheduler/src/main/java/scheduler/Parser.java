@@ -335,6 +335,8 @@ public class Parser {
 
                 NotCompatible notCompatible = new NotCompatible(bookings.get(0), bookings.get(1));
 
+                this.problem.addNotCompatible(notCompatible);
+
             }
 
     }
@@ -393,9 +395,7 @@ public class Parser {
 
                 }
 
-                if(unwanted != null){
-                    this.problem.addUnwanted(unwanted);
-                }
+
 
 
         }
@@ -444,8 +444,16 @@ public class Parser {
             }
 
         }
+
+
+        if(unwanted != null){
+            this.problem.addUnwanted(unwanted);
+        }
             System.out.println("Unwanted: " + trimmedLine);
-        }  
+        }
+        
+
+
       }
 
     public void parsePreferences(BufferedReader reader) throws IOException{

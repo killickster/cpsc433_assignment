@@ -70,7 +70,7 @@ public class State implements Comparable<State>{
 
         int j = 0;
 
-        if(this.courses[this.labs.length-1] == 0 ){
+        if(this.courses[this.courses.length-1] == 0 ){
 
             for(int i = 0; i < this.courseSlotsSize; i++){
                 State state = new State(this, j++);
