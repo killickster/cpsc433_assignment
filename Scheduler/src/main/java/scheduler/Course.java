@@ -4,17 +4,31 @@ import java.util.ArrayList;
 
 public class Course extends SlotBooking{
 
-    public static int id = 1;
+    private static int id = 1;
 
     private String courseSection;
     private ArrayList<Lab> labs;
+    private boolean evening;
     
     public Course(String courseIdentifier, String courseSection){
 
-        super(courseIdentifier, id++);
+        super(courseIdentifier, id++); 
 
         this.courseSection = courseSection;
         this.labs = new ArrayList<Lab>();
+
+
+
+        if(Integer.parseInt(courseSection.split(" ")[1]) >= 9){
+            this.evening = true;    
+        }else{
+            this.evening = false;
+        }
+
+    }
+
+    public boolean isEvening(){
+        return this.evening;
     }
 
 

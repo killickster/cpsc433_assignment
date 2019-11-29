@@ -4,7 +4,7 @@ import org.junit.Test;
 
 
 import static org.junit.Assert.*;
-public class ConstraintFunctionTest {
+public class PartialAssignmentsTest{
     
 
     private Problem problem;
@@ -60,6 +60,10 @@ public class ConstraintFunctionTest {
         problem.addCourseSlot(courseSlot3);
         problem.addCourseSlot(courseSlot4);
 
+        PartialAssignment partialAssignment = new PartialAssignment(course1,courseSlot1);
+
+        problem.addPartialAssignment(partialAssignment);
+
         OTree otree = new OTree(problem);
 
         this.otree = otree;
@@ -75,17 +79,15 @@ public class ConstraintFunctionTest {
 
     }
 
-    @Test public void testLabCourseTimeConflictViolation(){
+    @Test public void testPartialAssignemnts(){
 
         this.setup();
 
-        otree.getRootNode().assignSlotToCourse(1);
+        this.otree.getRootNode().assignSlotToCourse(2);
 
-        assertTrue("State should be valid: ", this.otree.constr(otree.getRootNode()));
+        assertFalse("Should not be a valid state", this.otree.testPartialAssignemnt(this.otree.getRootNode()));
+    
 
-        this.otree.getRootNode().assignSlotToLab(1);
-
-        assertFalse("State should not be valid", this.otree.constr(otree.getRootNode()));
 
 
 

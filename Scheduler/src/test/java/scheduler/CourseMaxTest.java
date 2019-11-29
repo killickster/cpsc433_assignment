@@ -3,8 +3,9 @@ package scheduler;
 import org.junit.Test;
 
 
+
 import static org.junit.Assert.*;
-public class ConstraintFunctionTest {
+public class CourseMaxTest {
     
 
     private Problem problem;
@@ -75,22 +76,21 @@ public class ConstraintFunctionTest {
 
     }
 
-    @Test public void testLabCourseTimeConflictViolation(){
+    @Test public void testCourseMaxFunction(){
 
         this.setup();
 
         otree.getRootNode().assignSlotToCourse(1);
+        otree.getRootNode().assignSlotToCourse(1);
+        otree.getRootNode().assignSlotToCourse(1);
 
-        assertTrue("State should be valid: ", this.otree.constr(otree.getRootNode()));
+        assertTrue("State should be valid: ", this.otree.testCourseMaxConstraint(otree.getRootNode()));
 
-        this.otree.getRootNode().assignSlotToLab(1);
+        otree.getRootNode().assignSlotToCourse(1);
 
-        assertFalse("State should not be valid", this.otree.constr(otree.getRootNode()));
-
+        assertFalse("State should not be valid: ", this.otree.testCourseMaxConstraint(this.otree.getRootNode()));
 
 
     }
-
-
 
 }

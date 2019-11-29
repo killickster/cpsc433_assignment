@@ -17,7 +17,7 @@ public class App {
         parser.parseFile(args[0]);
 
         OTree otree = new OTree(parser.getProblem());
-        
+       /* 
         otree.generateChildren();//make the initial batch of children
         
         boolean goal = false;
@@ -31,6 +31,8 @@ public class App {
          * 		call  otree.getLeftmostChild to pop the first child else return otree.parent (edge case for no parent of root)
          * 		repeat (shouldn't be any edge cases for ties)
          */
+
+         /*
         while (goal = false) {
         	//check if hard constraints are sat along with all courses/labs being assigned
         	if (otree.getRootNode().getCoursesSize() == otree.getRootNode().getNumberOfFilledCourses() &&
@@ -55,5 +57,6 @@ public class App {
         	System.out.println("There exists a solution: ");
         	//print out all of the course/lab assignments? Do we need to do this?
         }
+        */
     }
 }

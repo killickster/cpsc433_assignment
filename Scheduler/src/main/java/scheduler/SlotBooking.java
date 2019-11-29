@@ -21,12 +21,14 @@ public abstract class SlotBooking {
         this.preferences = new ArrayList<Preference>();
         this.paired = new ArrayList<SlotBooking>();
         this.assignedSlot = null;
+
         this.id = id;
     }
 
     public int getId(){
         return this.id;
     }
+
 
     public void setSlotBookingNumber(int slotBookingNumber){
         this.slotBookingNumber = slotBookingNumber;

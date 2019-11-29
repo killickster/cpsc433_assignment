@@ -41,6 +41,16 @@ test {
         includeTestsMatching "ParserTest"
 
         includeTestsMatching "ConstraintFunctionTest"
+
+        includeTestsMatching "EveningSlotTest"
+
+        includeTestsMatching "CourseMaxTest"
+
+        includeTestsMatching "NotCompatibleTest"
+
+        includeTestsMatching "PartialAssignmentsTest"
+
+        includeTestsMatching "UnwantedTest"
  }   
 }
 //This task copies the jar and moves it to the root directory

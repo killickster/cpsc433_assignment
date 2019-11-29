@@ -4,7 +4,7 @@ import org.junit.Test;
 
 
 import static org.junit.Assert.*;
-public class ConstraintFunctionTest {
+public class NotCompatibleTest{
     
 
     private Problem problem;
@@ -60,6 +60,10 @@ public class ConstraintFunctionTest {
         problem.addCourseSlot(courseSlot3);
         problem.addCourseSlot(courseSlot4);
 
+        NotCompatible notCompatible = new NotCompatible(lab1,lab2);
+
+        problem.addNotCompatible(notCompatible);
+
         OTree otree = new OTree(problem);
 
         this.otree = otree;
@@ -75,17 +79,16 @@ public class ConstraintFunctionTest {
 
     }
 
-    @Test public void testLabCourseTimeConflictViolation(){
+    @Test public void testNotCompatible(){
 
         this.setup();
 
-        otree.getRootNode().assignSlotToCourse(1);
-
-        assertTrue("State should be valid: ", this.otree.constr(otree.getRootNode()));
-
+        this.otree.getRootNode().assignSlotToLab(1);
         this.otree.getRootNode().assignSlotToLab(1);
 
-        assertFalse("State should not be valid", this.otree.constr(otree.getRootNode()));
+        assertFalse("Should not be a valid state", this.otree.testNonCompatible(this.otree.getRootNode()));
+
+
 
 
 

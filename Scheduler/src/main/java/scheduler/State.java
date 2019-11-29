@@ -31,6 +31,7 @@ public class State {
         this.numberOfFilledLabs = 0;
     }
 
+
     public int[] getLabs(){
         return this.labs;
     }
@@ -70,6 +71,9 @@ public class State {
     public int getNumberOfCourseSlots(){
         return this.courseSlotsSize;
     }
+
+
+    // The following two functions are just for testing purposes to make sure the constr function is working properly
 
     public void assignSlotToCourse(int courseSlotNum){
         this.courses[this.numberOfFilledCourses] = courseSlotNum;
