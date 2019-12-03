@@ -49,6 +49,10 @@ test {
         includeTestsMatching "NotCompatibleTest"
 
         includeTestsMatching "PartialAssignmentsTest"
+        
+        includeTestsMatching "SeniorClassesTest"
+
+		includeTestsMatching "Tuesdays11Test"
 
         includeTestsMatching "UnwantedTest"
  }   
