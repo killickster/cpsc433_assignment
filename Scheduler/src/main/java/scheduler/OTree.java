@@ -33,7 +33,6 @@ public class OTree{
         this.notCompatible = problem.getNotCompatible();
         this.partialAssignments = problem.getPartialAssignemnts();
         this.unwanted = problem.getUwanted();
-        System.out.println("size of unwanted: " + this.unwanted.size());
 
         this.problem = problem;
         this.rootNode = new State(numberOfLabs, numberOfCourses, numberOfLabSlots, numberOfCourseSlots);
@@ -63,7 +62,7 @@ public class OTree{
 
     public void traverseTree(Random rand, boolean random){
 
-        State state = this.getRootNode();
+        State state = this.rootNode;
 
         state.generateChildNodes();
 
@@ -397,11 +396,10 @@ public class OTree{
 
 
 
-
+/*
 
     public State getRootNode() { return this.rootNode; }  
 
-    /*
     public Problem getProblem() { return this.problem; }
     public OTree getParent() { return this.parent; }
     public void setParent(OTree parent) { this.parent = parent; }
@@ -423,8 +421,7 @@ public class OTree{
     	 * > Do this by checking SlotBooking(?) for each course/lab (or slot?) to determine the correct number of children. Not sure yet.
         */
         
-        /*
-    	
+    	/*
     	//this many children
     	int courseChildren = this.courses.size()-this.rootNode.getNumberOfFilledCourses(); 
     	int labChildren = 	 this.labs.size()-this.rootNode.getNumberOfFilledLabs();
@@ -465,7 +462,6 @@ public class OTree{
     }
 
 */
-
 
     
     /*

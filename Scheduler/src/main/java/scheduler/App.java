@@ -26,7 +26,8 @@ public class App {
 
 //        otree.traverseTree(rand, true);
 
-       /* 
+/*
+
         otree.generateChildren();//make the initial batch of children
         
         boolean goal = false;
@@ -42,6 +43,7 @@ public class App {
          */
 
          /*
+
         while (goal = false) {
         	//check if hard constraints are sat along with all courses/labs being assigned
         	if (otree.getRootNode().getCoursesSize() == otree.getRootNode().getNumberOfFilledCourses() &&
@@ -66,6 +68,8 @@ public class App {
         	System.out.println("There exists a solution: ");
         	//print out all of the course/lab assignments? Do we need to do this?
         }
-        */
+
+    */
     }
+
 }
