@@ -384,14 +384,109 @@ public class OTree{
     }
 
     public boolean test500LevelConflict(State state){
-        return true;
+        
+    	ArrayList<Course> seniorCourses = new ArrayList<Course>();
+    	
+    	for (Course c : courses) {
+    		
+    		if (c.getCourseIdentifier().charAt(5) == '5') { //course is a 5xx level
+    			
+    			seniorCourses.add(c);//make a sublist of 500 levels
+    		}
+    	}
+    	//for each compare it to the rest to see if they are assigned to the same time slot
+    	for (int i = 0; i < seniorCourses.size(); i++) {
+    	
+    		Course c = seniorCourses.get(i);
+    		
+    		for (int j = i+1; j < seniorCourses.size(); j++) {
+    			
+    			Course c2 = seniorCourses.get(j);
+    			
+    			if (c.getAssignedSlot() == c2.getAssignedSlot()) {
+    				
+    				return false;
+    				
+    			}
+    			
+    		}
+    		
+    	}
+    	
+    	return true;
     }
 
     public boolean testNoBookingOnTues11(State state){
-        return true;
+        
+    	for (Course c : courses) {
+    		//see if the course is booked at 11 on Tuesday
+    		if ( c.getAssignedSlot().getDay().equals("TU") && c.getAssignedSlot().getStartTime().equals("11:00")) {
+    			
+    			return false;
+    		}
+    		
+    	}
+    	
+    	return true;
     }
 
     public boolean test413and313valid(State state){
+    	
+    	String quiz;
+    	String quizCourse;
+    	
+    	for ( Course c : courses ) {
+    		quiz = null;
+    		quizCourse = null;
+    		
+    		if ( c.getCourseIdentifier() == "CPSC 813" ) {
+    			quiz = "CPSC 813";
+    			quizCourse = "CPSC 313";
+    		} else if ( c.getCourseIdentifier() == "CPSC 913" ) {
+    			quiz = "CPSC 913";
+    			quizCourse = "CPSC 413";
+    		}
+    			
+    		if ( quiz != null ) {
+    			
+    			if ( c.getAssignedSlot().getDay() != "TU" || c.getAssignedSlot().getStartTime() != "18:00") {
+    				
+    				return false;
+    			
+    			}
+    			
+    			for ( Course c2 : courses ) {
+    				
+    				if ( c2.getCourseIdentifier() == quizCourse ) {
+    					
+    					if (c2.getAssignedSlot().getStartTime() == "18:00") {
+    						
+    						return false;
+    					}
+    					
+    					//transitively with 313 conflicts >> just NotCompatible and Unwanted?
+    					
+    				}
+    			}
+    			
+    			for (Lab l : labs ) {
+    				
+    				if ( l.getCourseIdentifier() == quizCourse ) {
+    					
+    					if ( l.getAssignedSlot().getStartTime() == "18:00" ) {
+    						
+    						 return false;
+    					}
+    					
+    					//transitively with 313 conflicts ""
+    				}
+    				
+    			}
+    			
+    		}
+    		
+    	}
+    	
         return true;
     }
 
