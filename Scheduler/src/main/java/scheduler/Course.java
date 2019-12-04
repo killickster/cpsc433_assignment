@@ -11,6 +11,8 @@ public class Course extends SlotBooking{
     private boolean evening;
     private boolean seniorCourse;
     private boolean isSenior;
+    private boolean is313Quiz = false;
+    private boolean is413Quiz = false;
     
     public Course(String courseIdentifier, String courseSection){
 
@@ -28,6 +30,12 @@ public class Course extends SlotBooking{
             this.evening = false;
         }
 
+        System.out.println(courseIdentifier.split(" ")[1]);
+
+        this.is313Quiz = courseIdentifier.split(" ")[1].equals("813");
+        this.is413Quiz = courseIdentifier.split(" ")[1].equals("913");
+
+        System.out.println("quiz: " + this.is313Quiz);
 
     }
 
@@ -37,6 +45,14 @@ public class Course extends SlotBooking{
 
     public boolean isEvening(){
         return this.evening;
+    }
+
+    public boolean is313Quiz(){
+        return this.is313Quiz;
+    }
+
+    public boolean is413Quiz(){
+        return this.is413Quiz;
     }
 
 

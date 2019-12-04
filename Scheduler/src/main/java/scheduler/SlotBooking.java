@@ -16,6 +16,11 @@ public abstract class SlotBooking implements Comparable<SlotBooking> {
     private int id;
     private boolean eveingingClass;
     private int numberOfUncompatible;
+    private int numberOfUnwanted;
+    private boolean is313 = false;
+    private boolean is413 = false;
+    private boolean hasPartialAssignemnt = false;
+    private int priority = 0;
 
 
     public SlotBooking(String courseIdentifier, int id){
@@ -26,6 +31,9 @@ public abstract class SlotBooking implements Comparable<SlotBooking> {
         this.assignedSlot = null;
         this.numberOfUncompatible = 0;
         this.id = id;
+
+        this.is313 = courseIdentifier.split(" ")[1].equals("313");
+        this.is413 = courseIdentifier.split(" ")[1].equals("413");
     }
 
     public void notCompatibleIncrease(){
@@ -36,7 +44,22 @@ public abstract class SlotBooking implements Comparable<SlotBooking> {
         return this.numberOfUncompatible;
     }
 
+    public boolean hasPartialAssignemnt(){
+        return this.hasPartialAssignemnt;
+    }
 
+    public void setHasPartialAssignment(){
+        this.hasPartialAssignemnt = true;
+    }
+
+
+    public boolean is313(){
+        return this.is313;
+    }
+
+    public boolean is413(){
+        return this.is413;
+    }
 
     public int getId(){
         return this.id;
@@ -80,8 +103,37 @@ public abstract class SlotBooking implements Comparable<SlotBooking> {
         slot.incrementNumberOfCoursesAssigned();
     }
 
-    public int compareTo(SlotBooking slot){
-        return slot.getNumberOfUncompatible() - this.getNumberOfUncompatible();
+    public void unwantedIncrease(){
+        this.numberOfUnwanted++;
+    }
+    public int getNumberOfUnwanted(){
+        return this.numberOfUnwanted;
+    }
+
+    public int getPriority(){
+        return this.priority;
+    }
+
+    public void calculatePriority(){
+        int priority = 0;
+        if(this instanceof Course && (((Course) this).is313Quiz() || ((Course) this).is413Quiz())){
+            priority+=100;
+        }
+        if(this.hasPartialAssignemnt){
+            priority+=50;
+        } 
+
+        priority += this.numberOfUncompatible*2;
+
+        priority += this.numberOfUnwanted*2;
+
+        this.priority = priority;
+    }
+
+    public int compareTo(SlotBooking slotBooking){
+
+        return slotBooking.getPriority() - this.getPriority();
+
     }
 
 

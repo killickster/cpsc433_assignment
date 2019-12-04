@@ -24,6 +24,7 @@ public class OTree{
 
         problem.calculateNumberOfUncompatible();
         problem.regenerateIds();
+        problem.addConstraintsFor913and813();
 
         int numberOfCourses = problem.getCourses().size();
         int numberOfLabs = problem.getLabs().size();
@@ -242,22 +243,15 @@ public class OTree{
             int id2= nc.getBooking2().getId();
 
 
-            String slot1Day = null;
-            String slot1Time = null;
-            String slot2Day= null;
-            String slot2Time = null;
-
+            Slot slot1 = new Slot();
+            Slot slot2 = new Slot();
 
 
             if(nc.getBooking1() instanceof Course){
 
                 if(state.getCourses()[id1-1] != 0){
 
-                Slot slot = this.courseSlots.get(state.getCourses()[id1-1]-1);
-
-                slot1Day = slot.getDay();
-
-                slot1Time = slot.getStartTime();
+                slot1 = this.courseSlots.get(state.getCourses()[id1-1]-1);
 
                 }
 
@@ -265,11 +259,8 @@ public class OTree{
 
                 if(state.getLabs()[id1-1] != 0){
               
-                Slot slot = this.labSlots.get(state.getLabs()[id1-1]-1);
+                slot2 = this.labSlots.get(state.getLabs()[id1-1]-1);
 
-                slot1Day = slot.getDay();
-
-                slot1Time = slot.getStartTime();
                 }
             }
 
@@ -277,11 +268,7 @@ public class OTree{
 
                 if(state.getCourses()[id2-1] != 0){
 
-                Slot slot = this.courseSlots.get(state.getCourses()[id2-1]-1);
-
-                slot2Day = slot.getDay();
-
-                slot2Time = slot.getStartTime();
+                slot2 = this.courseSlots.get(state.getCourses()[id2-1]-1);
 
                 }
 
@@ -290,16 +277,12 @@ public class OTree{
                 if(state.getLabs()[id2-1] != 0){
               
 
-                Slot slot = this.labSlots.get(state.getLabs()[id2-1]-1);
+                slot2 = this.labSlots.get(state.getLabs()[id2-1]-1);
 
-                slot2Day = slot.getDay();
-
-                slot2Time = slot.getStartTime();
                 }
             }
 
-
-            if(slot1Day != null && slot1Time != null && slot2Day != null && slot2Time != null && slot1Day.equals(slot2Day) && slot1Time.equals(slot2Time)){
+            if((slot1 instanceof CourseSlot || slot1 instanceof LabSlot) && (slot2 instanceof CourseSlot || slot2 instanceof LabSlot) && slot1.timeConflict(slot2)){
                 return false;
             }
 
@@ -457,7 +440,6 @@ public class OTree{
 
 
     public boolean test413and313valid(State state){
-    	
         return true;
     }
 

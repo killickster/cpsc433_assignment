@@ -1,6 +1,6 @@
 package scheduler;
 
-public abstract class Slot {
+public class Slot {
 
     private String day;
     private String startTime;
@@ -14,6 +14,9 @@ public abstract class Slot {
     private boolean evening;
 
 
+    public Slot(){
+
+    }
 
     public Slot(String day, String startTime, Integer coursemax, Integer coursemin, int id){
         this.day = day;

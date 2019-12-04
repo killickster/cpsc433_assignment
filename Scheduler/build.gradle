@@ -55,6 +55,8 @@ test {
 		includeTestsMatching "Tuesdays11Test"
 
         includeTestsMatching "UnwantedTest"
+
+        includeTestsMatching "Test413and313"
  }   
 }
 //This task copies the jar and moves it to the root directory

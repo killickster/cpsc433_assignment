@@ -20,9 +20,6 @@ public class State implements Comparable<State>{
     private int depth;
     private int order;
     private boolean hasNodes = false;
-    private int mostRecentlyAssignedCourseId;
-    private int mostRecentlyAssignedLabId;
-    private Problem problem;
 
    
     
@@ -42,9 +39,6 @@ public class State implements Comparable<State>{
         this.numberOfFilledLabs = 0;
         this.depth = 1;
         this.order = 1;
-        this.mostRecentlyAssignedCourseId = 0;
-        this.mostRecentlyAssignedLabId = 0;
-        this.problem = problem;
     }
 
     public State(State state, int order){
@@ -66,10 +60,6 @@ public class State implements Comparable<State>{
         this.depth = state.depth + 1;
         this.order = order;
         this.parent = state;
-        this.mostRecentlyAssignedCourseId = state.getMostRecentlyAssignedCourseId();
-        this.mostRecentlyAssignedLabId = state.getMostRecentlyAssignedLabId();
-        this.problem = state.getProblem();
-
     }
 
     public ArrayList<State> getChildNodes(){
@@ -176,18 +166,6 @@ public class State implements Comparable<State>{
         return this.getPosition()- state.getPosition();
     }
 
-
-    public int getMostRecentlyAssignedLabId(){
-        return this.mostRecentlyAssignedLabId;
-    }
-
-    public int getMostRecentlyAssignedCourseId(){
-        return this.mostRecentlyAssignedCourseId;
-    }
-
-    public Problem getProblem(){
-        return this.problem;
-    }
 
 
     // The following two functions are just for testing purposes to make sure the constr function is working properly
