@@ -92,6 +92,74 @@ public class Problem {
         return selectedCourse;
     }
 
+    /*
+    public boolean containsPartialAssignemntForCourse(int courseId){
+
+        for(PartialAssignment ps: this.partialAssignments){
+            if(ps.getBooking() instanceof Course){
+                if(ps.getBooking().getId() == courseId){
+                    return true;
+                }
+            }
+        }
+    }
+    */
+
+    public void calculateNumberOfUncompatible(){
+        for(Course course: this.courses){
+            for(NotCompatible notCompatible: this.notCompatible){
+                if(notCompatible.getBooking1().equals((SlotBooking) course)){
+                    course.notCompatibleIncrease();
+                }
+                if(notCompatible.getBooking2().equals((SlotBooking) course)){
+                    course.notCompatibleIncrease();
+                }
+            }
+        }
+
+        for(Lab lab: this.labs){
+            for(NotCompatible notCompatible: this.notCompatible){
+                if(notCompatible.getBooking1().equals((SlotBooking) lab)){
+                    lab.notCompatibleIncrease();
+                }
+                if(notCompatible.getBooking2().equals((SlotBooking) lab)){
+                    lab.notCompatibleIncrease();
+                }
+            }
+        }
+    }
+
+    public void regenerateIds(){
+        Collections.sort(this.courses);
+        int i = 1;
+        for(Course course: this.courses){
+            course.setId(i);
+            i++;
+        }
+
+        Collections.sort(this.labs);
+        i = 1;
+        for(Lab lab: this.labs){
+            lab.setId(i);
+            i++;
+        }
+
+
+    }
+
+    /*
+    public boolean containsUnwantedCourse(int courseId){
+
+        for(Unwanted unwanted: this.unwanted){
+            if(unwanted.getBooking() instanceof Course){
+                if(unwanted.getBooking().getId() == courseId){
+
+                }
+            }
+        }
+    }
+*/
+
 
 
     public void addLabSlot(Slot slot){

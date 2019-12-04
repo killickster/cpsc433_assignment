@@ -51,5 +51,4 @@ public class Course extends SlotBooking{
     public void addLab(Lab lab){
         this.labs.add(lab);
     }
-
 }

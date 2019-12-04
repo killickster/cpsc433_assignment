@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Abstract class extended by Course and Lab classes
  */
 
-public abstract class SlotBooking {
+public abstract class SlotBooking implements Comparable<SlotBooking> {
 
     private String courseIdentifier;
     private ArrayList<Preference> preferences;
@@ -15,6 +15,7 @@ public abstract class SlotBooking {
     private int slotBookingNumber;
     private int id;
     private boolean eveingingClass;
+    private int numberOfUncompatible;
 
 
     public SlotBooking(String courseIdentifier, int id){
@@ -23,17 +24,26 @@ public abstract class SlotBooking {
         this.preferences = new ArrayList<Preference>();
         this.paired = new ArrayList<SlotBooking>();
         this.assignedSlot = null;
-
-
-        
-
+        this.numberOfUncompatible = 0;
         this.id = id;
+    }
+
+    public void notCompatibleIncrease(){
+        this.numberOfUncompatible++;
+    }
+
+    public int getNumberOfUncompatible(){
+        return this.numberOfUncompatible;
     }
 
 
 
     public int getId(){
         return this.id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
 
@@ -68,6 +78,10 @@ public abstract class SlotBooking {
     public void assignSlot(Slot slot){
         this.assignedSlot = slot;
         slot.incrementNumberOfCoursesAssigned();
+    }
+
+    public int compareTo(SlotBooking slot){
+        return slot.getNumberOfUncompatible() - this.getNumberOfUncompatible();
     }
 
 

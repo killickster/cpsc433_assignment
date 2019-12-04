@@ -19,11 +19,16 @@ public class State implements Comparable<State>{
     private State parent;
     private int depth;
     private int order;
+    private boolean hasNodes = false;
+    private int mostRecentlyAssignedCourseId;
+    private int mostRecentlyAssignedLabId;
+    private Problem problem;
+
    
     
     //Constructor for creating first state
 
-    public State(int numberOfLabs, int numberOfCourses, int numberOfLabSlots, int numberOfCourseSlots){
+    public State(int numberOfLabs, int numberOfCourses, int numberOfLabSlots, int numberOfCourseSlots, Problem problem){
 
         this.labs = new int[numberOfLabs];
         this.courses = new int[numberOfCourses];
@@ -37,6 +42,9 @@ public class State implements Comparable<State>{
         this.numberOfFilledLabs = 0;
         this.depth = 1;
         this.order = 1;
+        this.mostRecentlyAssignedCourseId = 0;
+        this.mostRecentlyAssignedLabId = 0;
+        this.problem = problem;
     }
 
     public State(State state, int order){
@@ -58,14 +66,30 @@ public class State implements Comparable<State>{
         this.depth = state.depth + 1;
         this.order = order;
         this.parent = state;
+        this.mostRecentlyAssignedCourseId = state.getMostRecentlyAssignedCourseId();
+        this.mostRecentlyAssignedLabId = state.getMostRecentlyAssignedLabId();
+        this.problem = state.getProblem();
 
     }
 
     public ArrayList<State> getChildNodes(){
         return this.childNodes;
     }
+/*
+    public void generateChildNodes2(){
 
+
+        this.childNodes = new ArrayList<State>();
+
+        for(int i = 0; i < this.courses.length; i++){
+            if(this.courses[i] == 0 && ){
+
+            }
+        }
+    }
+*/
     public void generateChildNodes(){
+
         this.childNodes = new ArrayList<State>();
 
         int j = 0;
@@ -149,7 +173,20 @@ public class State implements Comparable<State>{
     }
 
     public int compareTo(State state){
-        return state.getPosition()-this.getPosition();
+        return this.getPosition()- state.getPosition();
+    }
+
+
+    public int getMostRecentlyAssignedLabId(){
+        return this.mostRecentlyAssignedLabId;
+    }
+
+    public int getMostRecentlyAssignedCourseId(){
+        return this.mostRecentlyAssignedCourseId;
+    }
+
+    public Problem getProblem(){
+        return this.problem;
     }
 
 
@@ -162,8 +199,7 @@ public class State implements Comparable<State>{
     }
 
     public void assignSlotToLab(int labSlotNum){
-
-        this.labs[this.numberOfFilledLabs] = labSlotNum;
+        this.labs[numberOfFilledLabs] = labSlotNum;
         this.numberOfFilledLabs++;
         this.labSlots[labSlotNum-1]++;
     }

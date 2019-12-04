@@ -18,8 +18,12 @@ public class OTree{
     private State rootNode;
     private OTree parent;
     private ArrayList<OTree> children;
+    private Slot tuesday11Slot;
 
     public OTree(Problem problem){
+
+        problem.calculateNumberOfUncompatible();
+        problem.regenerateIds();
 
         int numberOfCourses = problem.getCourses().size();
         int numberOfLabs = problem.getLabs().size();
@@ -35,7 +39,7 @@ public class OTree{
         this.unwanted = problem.getUwanted();
 
         this.problem = problem;
-        this.rootNode = new State(numberOfLabs, numberOfCourses, numberOfLabSlots, numberOfCourseSlots);
+        this.rootNode = new State(numberOfLabs, numberOfCourses, numberOfLabSlots, numberOfCourseSlots, problem);
         this.parent = null; 
         this.children = new ArrayList<OTree>();
 
@@ -52,11 +56,9 @@ public class OTree{
         boolean tuesBookingCorrect = this.testNoBookingOnTues11(state);
         boolean computationClassesCorrect = this.test413and313valid(state);
 
-        if(courseMaxConstraint && courseLabTimeConflict && nonCompatible && partialAssignment && unwanted && courseEveningRequirements && level500TimeConflict && tuesBookingCorrect && computationClassesCorrect){
-            System.out.println("true");
+        if(courseMaxConstraint && courseLabTimeConflict && nonCompatible && partialAssignment && unwanted && level500TimeConflict && courseEveningRequirements && tuesBookingCorrect && computationClassesCorrect){
             return true;
         }
-        System.out.println("false");
 
         return false;
    
@@ -78,7 +80,7 @@ public class OTree{
             numberOfOperations++;
             ArrayList<State> states = state.getChildNodes();
 
-
+            //System.out.println("Number of childeren: " + state.getChildNodes().size());
             
             int deepest = 0;
             boolean tie = false;
@@ -113,21 +115,20 @@ public class OTree{
             if(states.size() == 0){
                 for(int i = 0; i < state.getParent().getChildNodes().size(); i++){
                     if(state.getParent().getChildNodes().get(i).equals(state)){
+                        //System.out.println("removing itself");
                         state.getParent().getChildNodes().remove(i);
                     }
                 }
 
-                System.out.println("going up");
 
                 state = state.getParent();
-            }
+            }else if(states.size() > 0 && random){
 
 
-            Collections.sort(states);
+                Collections.sort(states);
 
-            if(states.size() > 0 && !random){
-
-                int x = rand.nextInt((states.size()-1 - 0) + 1) + 0;
+                System.out.println("position: " + states.get(0));
+                int x = rand.nextInt((states.size()-1-0) + 1) + 0;
 
                 //System.out.println("size" + states.size());
                 //System.out.println("selected" + x);
@@ -135,14 +136,17 @@ public class OTree{
                 state = states.get(x);
 
                 state.generateChildNodes();
-            }else if(states.size() > 0 && random){
+            }else if(states.size() > 0 && !random){
 //                System.out.println("size" + states.size());
  
+                Collections.sort(states);
                 state = states.get(0);
+
 
                 state.generateChildNodes();
             }
 
+             //System.out.println("Depth: " + state.getDepth());
 
         }
 
@@ -388,23 +392,31 @@ public class OTree{
 
     public boolean test500LevelConflict(State state){
 
+        if(state.getNumberOfFilledCourses() != 0){
         int mostRecentCourseId = state.getNumberOfFilledCourses();
 
-        int slotIdMostRecentCourse = state.getCourses()[mostRecentCourseId];
+        int slotIdMostRecentCourse = state.getCourses()[mostRecentCourseId-1];
+
 
         Slot slotMostRecentCourse = this.courseSlots.get(slotIdMostRecentCourse-1);
 
-        if(this.courses.get(mostRecentCourseId).isSenior()){
+        if(this.courses.get(mostRecentCourseId-1).isSenior()){
 
             for(Course course: this.courses){
+
+                
 
                 if(course.isSenior()){
 
                     int slotId = state.getCourses()[course.getId()-1];
 
-                    if(slotId != 0){
+
+                    if(slotId != 0 && course.getId() != mostRecentCourseId){
 
                         if(this.courseSlots.get(slotId -1).timeConflict(slotMostRecentCourse)){
+
+
+                            //System.out.println("conflict");
 
                             return false;
                         }
@@ -414,11 +426,32 @@ public class OTree{
                 }
             }
         }
+    }
 
     	return true;
     }
 
     public boolean testNoBookingOnTues11(State state){
+
+
+        int courseId = state.getNumberOfFilledCourses();
+
+        if(courseId != 0){
+
+            int courseSlotId = state.getCourses()[courseId -1];
+
+            if(courseSlotId != 0){
+                Slot slotMostRecentCourse = this.courseSlots.get(courseSlotId-1);
+
+                if(slotMostRecentCourse.getDay().equals("TU")){
+                    if((slotMostRecentCourse.getBeginTime() >= 1100 && slotMostRecentCourse.getBeginTime() < 1230) || (slotMostRecentCourse.getEndTime() > 1100 && slotMostRecentCourse.getEndTime() <= 1230)){
+                        return false;
+                    }
+                }
+            }
+        }
+
+
         return true;
     }
 

@@ -46,11 +46,11 @@ public abstract class Slot {
     }
 
     public boolean timeConflict(Slot slot){
-        if((this.beginTime >= slot.getBeginTime() && this.beginTime < slot.getEndTime()) || (this.endTime <= slot.getEndTime() && this.endTime > slot.getBeginTime()){
-            return false;
+        if(slot.getDay().equals(this.day) && ((this.beginTime >= slot.getBeginTime() && this.beginTime < slot.getEndTime()) || (this.endTime <= slot.getEndTime() && this.endTime > slot.getBeginTime()))){
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public void setEndTime(Integer endTime){
