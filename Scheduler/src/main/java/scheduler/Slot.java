@@ -14,6 +14,7 @@ public abstract class Slot {
     private boolean evening;
 
 
+
     public Slot(String day, String startTime, Integer coursemax, Integer coursemin, int id){
         this.day = day;
         this.startTime = startTime;
@@ -38,6 +39,22 @@ public abstract class Slot {
 
     public Integer getBeginTime(){
         return this.beginTime;
+    }
+
+    public Integer getEndTime(){
+        return this.endTime;
+    }
+
+    public boolean timeConflict(Slot slot){
+        if((this.beginTime >= slot.getBeginTime() && this.beginTime < slot.getEndTime()) || (this.endTime <= slot.getEndTime() && this.endTime > slot.getBeginTime()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public void setEndTime(Integer endTime){
+        this.endTime = endTime;
     }
 
     public int getId(){

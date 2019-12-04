@@ -53,8 +53,10 @@ public class OTree{
         boolean computationClassesCorrect = this.test413and313valid(state);
 
         if(courseMaxConstraint && courseLabTimeConflict && nonCompatible && partialAssignment && unwanted && courseEveningRequirements && level500TimeConflict && tuesBookingCorrect && computationClassesCorrect){
+            System.out.println("true");
             return true;
         }
+        System.out.println("false");
 
         return false;
    
@@ -190,7 +192,8 @@ public class OTree{
 
 
         String courseDay = this.courseSlots.get(slotIdForCurrentlyAssignedCourse-1).getDay();
-        String courseTime = this.courseSlots.get(slotIdForCurrentlyAssignedCourse-1).getStartTime();
+        Integer courseStart = this.courseSlots.get(slotIdForCurrentlyAssignedCourse-1).getBeginTime();
+        Integer courseEnd = this.courseSlots.get(slotIdForCurrentlyAssignedCourse-1).getEndTime();
 
         
         ArrayList<Lab> labs = this.courses.get(state.getNumberOfFilledCourses()-1).getLabs();
@@ -205,9 +208,10 @@ public class OTree{
 
             if(currentlyAssignedLabId != 0){
                 String labDay = this.labSlots.get(currentlyAssignedLabId-1).getDay();
-                String labTime = this.labSlots.get(currentlyAssignedLabId-1).getStartTime();
+                Integer labStart = this.labSlots.get(currentlyAssignedLabId-1).getBeginTime();
+                Integer labEnd = this.labSlots.get(currentlyAssignedLabId-1).getEndTime();
 
-                if(labDay.equals(courseDay) && labTime.equals(courseTime)){
+                if(labDay.equals(courseDay) && ((labStart >= courseStart && labStart < courseEnd) || (labEnd > courseStart && labEnd <= courseStart))){
 
                     return false;
                 }
@@ -383,8 +387,34 @@ public class OTree{
     }
 
     public boolean test500LevelConflict(State state){
-        
-    	
+
+        int mostRecentCourseId = state.getNumberOfFilledCourses();
+
+        int slotIdMostRecentCourse = state.getCourses()[mostRecentCourseId];
+
+        Slot slotMostRecentCourse = this.courseSlots.get(slotIdMostRecentCourse-1);
+
+        if(this.courses.get(mostRecentCourseId).isSenior()){
+
+            for(Course course: this.courses){
+
+                if(course.isSenior()){
+
+                    int slotId = state.getCourses()[course.getId()-1];
+
+                    if(slotId != 0){
+
+                        if(this.courseSlots.get(slotId -1).timeConflict(slotMostRecentCourse)){
+
+                            return false;
+                        }
+                    
+                    }
+
+                }
+            }
+        }
+
     	return true;
     }
 
