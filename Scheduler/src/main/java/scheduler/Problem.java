@@ -59,7 +59,6 @@ public class Problem {
                 && exclusiveLab.getLabType().equals(labType) && exclusiveLab.getLabSection().equals(labSection)){
                    selectedLab = lab;
 
-                System.out.println("finding lab");
                 }
             }   
         }
@@ -253,10 +252,6 @@ public class Problem {
 
         for(Course course: this.courses){
             course.calculatePriority();
-            if(course.getCourseIdentifier().equals("CPSC 587")){
-                System.out.println("587 priority: " + course.getPriority());
-                System.out.println(course.getNumberOfUncompatible());
-            }
         }
 
         for(Lab lab: this.labs){

@@ -96,7 +96,6 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Course Slot:" + trimmedLine);
 
             Matcher regexMatcher = this.slotPattern.matcher(trimmedLine);
 
@@ -166,7 +165,6 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Course: " + trimmedLine);
 
             Matcher regexMatcher = Parser.coursePattern.matcher(trimmedLine);
 
@@ -204,7 +202,6 @@ public class Parser {
                 return;
             }
 
-            System.out.println("Lab: " + trimmedLine);
 
             Matcher regexMatcher1 = Parser.labPattern1.matcher(trimmedLine);
             Matcher regexMatcher2 = Parser.coursePattern.matcher(trimmedLine);
@@ -449,7 +446,6 @@ public class Parser {
         if(unwanted != null){
             this.problem.addUnwanted(unwanted);
         }
-            System.out.println("Unwanted: " + trimmedLine);
         }
         
 
@@ -543,10 +539,8 @@ public class Parser {
 
 
 
-            System.out.println("Preference: " + trimmedLine);
 
             if(preference == null){
-                System.out.println("Either the lab or the slot does not exist");
             }
 
     }
@@ -632,7 +626,6 @@ public class Parser {
       booking.get(0).addPaired(booking.get(1));
       booking.get(1).addPaired(booking.get(0));
 
-        System.out.println("Pair: " + trimmedLine);
     }
 }
 
@@ -721,15 +714,9 @@ public class Parser {
         }
 
 
-            System.out.println("Partial Assignment: " + trimmedLine);
 
         }
 
-        System.out.println("Number of course slots: "+this.problem.getCourseSlots().size());
-        System.out.println("Number of lab slots: " +this.problem.getLabSlots().size());
-        System.out.println("Number of courses: " + this.problem.getCourses().size());
-        System.out.println("Number of labs: " + this.problem.getLabs().size());
-        System.out.println("Number of partial assignements" + this.problem.getPartialAssignemnts().size());
 
     }
 

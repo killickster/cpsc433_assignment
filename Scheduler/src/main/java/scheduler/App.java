@@ -4,7 +4,6 @@
 package scheduler;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class App {
     public String getGreeting() {
@@ -17,11 +16,9 @@ public class App {
 
         parser.parseFile(args[0]);
 
-        Random rand = new Random();
-
         OTree otree = new OTree(parser.getProblem());
 
-        otree.traverseTree(rand, false);
+        otree.traverseTree();
 
 
 //        otree.traverseTree(rand, true);

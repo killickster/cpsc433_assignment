@@ -30,12 +30,8 @@ public class Course extends SlotBooking{
             this.evening = false;
         }
 
-        System.out.println(courseIdentifier.split(" ")[1]);
-
         this.is313Quiz = courseIdentifier.split(" ")[1].equals("813");
         this.is413Quiz = courseIdentifier.split(" ")[1].equals("913");
-
-        System.out.println("quiz: " + this.is313Quiz);
 
     }
 

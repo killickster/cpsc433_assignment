@@ -36,7 +36,6 @@ public class Slot {
             this.evening = false;
         }
 
-        System.out.println(this.evening);
 
     }
 

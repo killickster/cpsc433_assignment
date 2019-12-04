@@ -65,19 +65,7 @@ public class State implements Comparable<State>{
     public ArrayList<State> getChildNodes(){
         return this.childNodes;
     }
-/*
-    public void generateChildNodes2(){
 
-
-        this.childNodes = new ArrayList<State>();
-
-        for(int i = 0; i < this.courses.length; i++){
-            if(this.courses[i] == 0 && ){
-
-            }
-        }
-    }
-*/
     public void generateChildNodes(){
 
         this.childNodes = new ArrayList<State>();
