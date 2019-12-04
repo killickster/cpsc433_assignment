@@ -9,6 +9,8 @@ public class Course extends SlotBooking{
     private String courseSection;
     private ArrayList<Lab> labs;
     private boolean evening;
+    private boolean seniorCourse;
+    private boolean isSenior;
     
     public Course(String courseIdentifier, String courseSection){
 
@@ -18,6 +20,7 @@ public class Course extends SlotBooking{
         this.labs = new ArrayList<Lab>();
 
 
+        this.isSenior = courseIdentifier.split(" ")[1].charAt(0) == '5';
 
         if(Integer.parseInt(courseSection.split(" ")[1]) >= 9){
             this.evening = true;    
@@ -25,6 +28,11 @@ public class Course extends SlotBooking{
             this.evening = false;
         }
 
+
+    }
+
+    public boolean isSenior(){
+        return this.isSenior;
     }
 
     public boolean isEvening(){

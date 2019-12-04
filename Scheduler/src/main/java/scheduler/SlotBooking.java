@@ -14,6 +14,8 @@ public abstract class SlotBooking {
     private Slot assignedSlot;
     private int slotBookingNumber;
     private int id;
+    private boolean eveingingClass;
+
 
     public SlotBooking(String courseIdentifier, int id){
 
@@ -22,8 +24,13 @@ public abstract class SlotBooking {
         this.paired = new ArrayList<SlotBooking>();
         this.assignedSlot = null;
 
+
+        
+
         this.id = id;
     }
+
+
 
     public int getId(){
         return this.id;

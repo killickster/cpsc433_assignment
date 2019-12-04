@@ -4,6 +4,8 @@ public abstract class Slot {
 
     private String day;
     private String startTime;
+    private Integer beginTime;
+    private Integer endTime;
     private Integer coursemax;
     private Integer coursemin;
     private Integer numberOfCoursesAssigned;
@@ -20,11 +22,22 @@ public abstract class Slot {
         this.numberOfCoursesAssigned = 0;
         this.id = id;
 
-        if(this.startTime.equals("18:00") || this.startTime.equals("18:30") || this.startTime.equals("19:00")|| this.startTime.equals("20:00")){
+        String[] startTimePieces = startTime.split(":");
+
+        this.beginTime = Integer.parseInt(startTimePieces[0])*100+Integer.parseInt(startTimePieces[1]);
+
+        if(this.beginTime >= 1800){
             this.evening = true;
         }else{
             this.evening = false;
-        };
+        }
+
+        System.out.println(this.evening);
+
+    }
+
+    public Integer getBeginTime(){
+        return this.beginTime;
     }
 
     public int getId(){
