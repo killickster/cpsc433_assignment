@@ -39,6 +39,7 @@ public class State implements Comparable<State>{
         this.numberOfFilledLabs = 0;
         this.depth = 1;
         this.order = 1;
+        this.parent = null;
     }
 
     public State(State state, int order){
@@ -49,7 +50,7 @@ public class State implements Comparable<State>{
         System.arraycopy(state.getCourses(), 0, this.courses,0, state.getCoursesSize());
         this.labSlots = new int[state.getLabsSize()];
         System.arraycopy(state.getLabSlots(), 0, this.labSlots,0, state.getNumberOfLabSlots());
-        this.courseSlots = new int[state.getLabsSize()];
+        this.courseSlots = new int[state.getCoursesSize()];
         System.arraycopy(state.getCourseSlots(), 0, this.courseSlots, 0, state.getNumberOfCourseSlots());
         this.coursesSize = state.getCoursesSize();
         this.labsSize = state.getLabsSize();
@@ -84,7 +85,7 @@ public class State implements Comparable<State>{
         }
 
 
-        if(this.labs[this.labs.length-1] == 0){
+        if(this.labs.length > 0 && this.labs[this.labs.length-1] == 0){
 
             for(int i = 0; i < this.labSlotsSize; i++){
                 State state = new State(this, j++);

@@ -180,6 +180,14 @@ public class Parser {
                 String courseSection = courseFormat + " " + section;
 
                 Course course = new Course(courseIdentifier, courseSection);
+                
+                if(course.is313()) {
+                	Course quizCourse = new Course("CPSC 813", "LEC 01");
+                	this.problem.addCourse(quizCourse);
+                }else if(course.is413()) {
+                	Course quizCourse = new Course("CPSC 913", "LEC 01");
+                	this.problem.addCourse(quizCourse);
+                }
 
                 this.problem.addCourse(course);
             }

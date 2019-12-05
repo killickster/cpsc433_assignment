@@ -113,10 +113,19 @@ public class OTree{
             }
 
             if(states.size() == 0){
+            	
+            	 if(state.equals(this.getRootNode())) {
+                 	System.out.println("No solution");
+                 	return;
+                 	
+                 }
+            	
                 for(int i = 0; i < state.getParent().getChildNodes().size(); i++){
                     if(state.getParent().getChildNodes().get(i).equals(state)){
                         //System.out.println("removing itself");
                         state.getParent().getChildNodes().remove(i);
+                        
+                       
                     }
                 }
 
@@ -137,9 +146,6 @@ public class OTree{
         }
 
         this.displayState(state);
-
-
-        System.out.println(constr(state));
 
 
 
